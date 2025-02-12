@@ -1,0 +1,138 @@
+body {
+    font-family: Arial, sans-serif;
+    width:100%;
+    background-color: #f7f9fc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+form {
+    max-width: 400px;
+    width: 100%;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+h1 .travel {
+    color: #050CB3; /* Blue for "Travel" */
+}
+
+h1 .friend {
+    color: black; /* Black for "Friend" */
+}
+
+.subheading {
+    font-size: 18px;
+    margin-bottom: 20px;
+    font-weight: normal;
+    color: #333;
+}
+
+input {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.password-container {
+    position: relative;
+}
+
+.password-container input {
+    width: 100%;
+    padding-right: 40px; /* Space for the toggle */
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 18px; /* Adjust font size */
+    color: grey; /* Grey color for eye icon */
+}
+
+button {
+    background-color: #050CB3;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #333; /* Dark grey on hover */
+}
+
+p.error {
+    color: red;
+    font-size: 12px;
+    margin-top: -10px;
+    margin-bottom: 15px;
+}
+
+p.success {
+    color: green;
+    font-size: 12px;
+    margin-top: -10px;
+    margin-bottom: 15px;
+}
+
+p.signup-link {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+p.signup-link span {
+    color: #050CB3;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.google-signin {
+    margin-top: 20px;
+}
+
+.google-signin span {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.google-button {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #757575;
+}
+
+.google-button:hover {
+    background-color: #f7f9fc;
+    border-color: #333; /* Dark grey on hover */
+}

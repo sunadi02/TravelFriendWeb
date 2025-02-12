@@ -1,0 +1,44 @@
+.add-card-container {
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .add-card-container h2 {
+    margin-bottom: 20px;
+  }
+  
+  .add-card-container form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .add-card-container label {
+    text-align: left;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .add-card-container input {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .add-card-container button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .add-card-container button:hover {
+    background-color: #0056b3;
+  }
+  

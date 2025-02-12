@@ -1,0 +1,212 @@
+/* Navbar */
+.navbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background: rgba(0, 0, 0, 0.46);
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.logo a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.logo a:hover {
+  color: inherit;
+}
+
+.logo-blue {
+  color: #1f26fb;
+}
+
+.navbar nav a {
+  color: white;
+  text-decoration: none;
+  margin: 0 15px;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+}
+
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+/* ✅ Fixed Hotel Details Layout */
+.hotelroom-details {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Ensures image on left and details on right */
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  margin: 50px auto;
+  margin-top: 350px; /* Adjusted margin */
+  width: 90%; /* Make it longer */
+  max-width: 800px; /* Increased max width */
+  height: auto;
+  gap: 30px;
+}
+
+/* ✅ Updated Image Section */
+.hotel-image1-container {
+  flex: 1; /* Takes up 1 part of the width */
+  max-width: 450px; /* Increased size */
+}
+
+.hotel-image1 {
+  width: 50%;
+  height: 320px; /* Make it slightly taller */
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+/* ✅ Updated Hotel Info Section */
+.hotelroom-details {
+  flex: 1; /* Takes up more space on the right */
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: left; /* Ensure all text is left-aligned */
+  width: 100%;
+  height: 100%;
+}
+
+.hotelinfo-all p{
+  text-align: left;
+  margin-right: 200px;
+  width: 500px;
+  margin-bottom: 10px;
+}
+
+
+.hotelroom-details h1 {
+  font-size: 28px; /* Bigger hotel name */
+  margin-top: 1px;
+  color: #050CB3;
+}
+
+.hotelroom-details .description {
+  font-size: 18px; /* Increased text size */
+  color: #575757;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.hotel-info .location,
+.hotel-info .price-range,
+.hotel-info .contact,
+.hotel-info .email,
+.hotel-info .rating {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.hotel-info .rating {
+  font-weight: bold;
+  color: #050CB3;
+}
+
+
+/* ✅ Fixed Search Bar */
+.search-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.search-container input {
+  width: 300px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.search-container i {
+  margin-left: -30px;
+  color: gray;
+}
+
+/* ✅ Room Cards Layout */
+.rooms-section {
+  width: 100%;
+  margin: auto;
+}
+
+.rooms-section h2{
+  margin-bottom: 20px;
+}
+
+.room-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+}
+
+.room-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  width: 250px;
+  text-align: center;
+}
+
+.room-image {
+  width: 100%;
+  height: 200px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.book-btn {
+  background: #050CB3;
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  margin-top: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* ✅ Adjusted Map Section */
+.map-section {
+  width: 80%;
+  margin: 40px auto;
+  text-align: center;
+}
+
+.map-section h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #050CB3;
+}
+
+/* ✅ Footer */
+.footer {
+  background: #050CB3;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+}

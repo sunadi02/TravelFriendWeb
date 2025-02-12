@@ -20,16 +20,23 @@ const HomePage = ({ fullName }) => {
 
   const [places, setPlaces] = useState([]);
 const [hotels, setHotels] = useState([]);
+const [guides, setGuides] = useState([]);
+
 
 // Fetch data from API
 useEffect(() => {
-    axios.get("http://localhost:5000/api/places")
-        .then(response => setPlaces(response.data.places))
-        .catch(error => console.error("Error fetching places:", error));
+  axios.get("http://localhost:5000/api/places")
+      .then(response => setPlaces(response.data.places))
+      .catch(error => console.error("Error fetching places:", error));
 
-    axios.get("http://localhost:5000/api/hotels")
-        .then(response => setHotels(response.data.hotels))
-        .catch(error => console.error("Error fetching hotels:", error));
+  axios.get("http://localhost:5000/api/hotels")
+      .then(response => setHotels(response.data.hotels))
+      .catch(error => console.error("Error fetching hotels:", error));
+
+  axios.get("http://localhost:5000/api/guides")
+      .then(response => setGuides(response.data.guides))
+      .catch(error => console.error("Error fetching guides:", error));
+  
 }, []);
 
   return (
@@ -157,6 +164,23 @@ useEffect(() => {
           ))}
         </div>
       </section>
+
+      {/* Featured Guides Section */}
+<section className="guides-section">
+  <div className="section-header">
+    <h2>Featured Guides</h2>
+    <a href="/all-guides" className="see-all">See All</a>
+  </div>
+  <div className="card-container">
+    {guides.map((guide, index) => (
+      <div className="card" key={index}>
+        <img src={guide.profile_pic || "fallback-guide.jpg"} alt={guide.name} className="card-image" />
+        <h3 className="card-title">{guide.name}</h3>
+        <p className="card-description">{guide.experience} years of experience</p>
+      </div>
+    ))}
+  </div>
+</section>
 
        {/* Footer */}
        <footer className="homepage-footer">

@@ -4,6 +4,10 @@ const API = axios.create({
     baseURL: "http://localhost:5000/api", // Your backend base URL
 });
 
+export const fetchAdminCredentials = async () => {
+    return await axios.get("http://localhost:5000/api/admin");
+};
+
 // Add a request interceptor to include the token
 API.interceptors.request.use((config) => {
     const token = localStorage.getItem("token");

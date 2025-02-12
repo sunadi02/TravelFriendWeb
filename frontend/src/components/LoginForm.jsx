@@ -1,61 +1,49 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "../services/api"; // Import API service
+
 import "./LoginForm.css";
+import axios from "axios";
 
 function LoginForm({ setLoggedIn }) {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ username: "", password: "" });
+    
     const [error, setError] = useState("");
-    const [successMessage, setSuccessMessage] = useState(""); // For success pop-up
-    const [showPassword, setShowPassword] = useState(false); // To toggle password visibility
+    const [successMessage, setSuccessMessage] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
 
-    // Hardcoded admin credentials
-    const ADMIN_CREDENTIALS = { username: "admin", password: "admin123" };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
-        // First, check if the user is an admin
-        if (
-            formData.username === ADMIN_CREDENTIALS.username &&
-            formData.password === ADMIN_CREDENTIALS.password
-        ) {
-            // Save admin session
-            localStorage.setItem("isAdmin", "true");
-    
-            setSuccessMessage("Logged in successfully as Admin!");
-            setError("");
-            setLoggedIn(true);
-    
-            navigate("/admin-dashboard"); // Redirect to Admin Dashboard
-    
-            setTimeout(() => setSuccessMessage(""), 3000);
-            return; // Important: Stop further execution
-        }
-    
+
         try {
-            const { data } = await loginUser(formData);
-    
-            // Save token & user ID in localStorage
-            localStorage.setItem("token", data.token);
-            localStorage.setItem("user_id", data.user.id);
-            localStorage.setItem("isAdmin", "false"); // Mark as regular user
-    
-            console.log("User ID saved:", data.user.id); // Debugging check
-    
+            // First, try admin login
+            const adminResponse = await axios.post("http://localhost:5000/api/admin/login", formData);
+            if (adminResponse.data.success) {
+                localStorage.setItem("isAdmin", "true");
+                setSuccessMessage("Logged in successfully as Admin!");
+                setLoggedIn(true);
+                navigate("/admin-dashboard");
+                return;
+            }
+        } catch (adminError) {
+            console.log("Admin login failed, trying user login...");
+        }
+
+        try {
+            // If not admin, try user login
+            const userResponse = await axios.post("http://localhost:5000/api/user/login", formData);
+            localStorage.setItem("token", userResponse.data.token);
+            localStorage.setItem("user_id", userResponse.data.user.id);
+            localStorage.setItem("isAdmin", "false");
+
             setSuccessMessage("Logged in successfully!");
-            setError(""); 
             setLoggedIn(true);
-    
-            navigate("/"); // Redirect to homepage
-    
-            setTimeout(() => setSuccessMessage(""), 3000);
-        } catch (err) {
-            setError(err.response?.data?.error || "Login failed");
+            navigate("/");
+        } catch (userError) {
+            setError("Invalid credentials!");
         }
     };
-    
 
     return (
         <form onSubmit={handleSubmit}>
@@ -70,33 +58,22 @@ function LoginForm({ setLoggedIn }) {
                 value={formData.username}
                 onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                 required
-                onKeyDown={(e) => { if (e.key === 'Enter') handleSubmit(e); }}
             />
             <div className="password-container">
                 <input
-                    type={showPassword ? "text" : "password"} // Toggle visibility
+                    type={showPassword ? "text" : "password"}
                     placeholder="Password"
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     required
-                    onKeyDown={(e) => { if (e.key === 'Enter') handleSubmit(e); }}
                 />
-                <span
-                    className="toggle-password"
-                    onClick={() => setShowPassword(!showPassword)} 
-                >
-                    {showPassword ? "👁️" : "👁‍🗨️"} {/* Eye icons */}
+                <span className="toggle-password" onClick={() => setShowPassword(!showPassword)}>
+                    {showPassword ? "👁️" : "👁‍🗨️"}
                 </span>
             </div>
             {error && <p className="error">{error}</p>}
-            {successMessage && <p className="success">{successMessage}</p>} {/* Success message */}
+            {successMessage && <p className="success">{successMessage}</p>}
             <button type="submit">Log In</button>
-            <p className="signup-link">
-                Don't have an account? <span onClick={() => navigate("/register")}>Sign Up</span>
-            </p>
-            <p className="forgot-password">
-                Forgot Password? <span onClick={() => navigate("/forgot-password")}>Click here</span>
-            </p>
         </form>
     );
 }

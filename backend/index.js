@@ -46,7 +46,7 @@ app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
 
-app.post("/api/login", (req, res) => {
+app.post("/api/user/login", (req, res) => {
     const { username, password } = req.body;
 
     // Validate input
@@ -91,7 +91,7 @@ app.post("/api/login", (req, res) => {
     });
 });
 
-app.post("/api/login", (req, res) => {
+app.post("/api/admin/login", (req, res) => {
     const { username, password } = req.body;
 
     const query = "SELECT * FROM admins WHERE username = ? AND password_hash = ?";
@@ -112,8 +112,7 @@ app.post("/api/login", (req, res) => {
     });
 });
 
-// 🟢 Route to Add New Admin
-router.post("/add", (req, res) => {
+app.post("/admin/add", (req, res) => {
     const { username, email, password } = req.body;
 
     if (!username || !email || !password) {
@@ -121,7 +120,7 @@ router.post("/add", (req, res) => {
     }
 
     const query = "INSERT INTO admins (username, email, password_hash, created_at) VALUES (?, ?, ?, NOW())";
-    
+
     db.query(query, [username, email, password], (err, result) => {
         if (err) {
             return res.status(500).json({ error: "Database error", details: err });
@@ -132,11 +131,11 @@ router.post("/add", (req, res) => {
 });
 
 
-app.get("/api/:admin_id", (req, res) => {
-    const { admin_id } = req.params;
+app.get("/api/admin/:id", (req, res) => {
+    const adminId = req.params.id;
 
     const query = "SELECT * FROM admins WHERE admin_id = ?";
-    db.query(query, [admin_id], (err, results) => {
+    db.query(query, [adminId], (err, results) => {
         if (err) return res.status(500).json({ error: "Database error" });
 
         if (results.length === 0) {

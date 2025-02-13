@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./HomePage.css";
 import 'boxicons/css/boxicons.min.css';
 import discountImage from '../images/discount.png';
@@ -7,6 +8,7 @@ import pp from '../images/pp.png';
 
 
 const HomePage = ({ fullName }) => {
+  const navigate = useNavigate();
   const [showProfilePopup, setShowProfilePopup] = useState(false);
 
   const handleProfileClick = () => {
@@ -22,6 +24,9 @@ const HomePage = ({ fullName }) => {
 const [hotels, setHotels] = useState([]);
 const [guides, setGuides] = useState([]);
 
+const handleBookNow = (hotel_id) => {
+  navigate(`/select-room/${hotel_id}`); // ✅ Correct route
+};
 
 // Fetch data from API
 useEffect(() => {
@@ -123,7 +128,8 @@ useEffect(() => {
       <div className="discount-offer">
         <div className="discount-content">
           <h3>Get 10% Off Premium Membership!</h3>
-          <p>Exclusive Access To 5-Star Hotels And Premium Travel Guides. Limited Time Only.</p>
+          <p>Exclusive Access To 5-Star Hotels And Premium Travel Guides. Enjoy a 10% Discount on All Bookings with TravelFriend!. Limited Time Only.</p>
+          <p>Terms and conditions apply. Offer valid until 31st April.</p>
           <button className="upgrade-btn">Upgrade Now</button>
         </div>
         <div className="discount-image">
@@ -156,10 +162,11 @@ useEffect(() => {
         </div>
         <div className="card-container">
           {hotels.map((hotel, index) => (
-            <div className="card" key={index}>
+            <div className="card" key={index} onClick={() => handleBookNow(hotel.hotel_id)}>
               <img src={hotel.image} alt={hotel.title} className="card-image" />
-              <h3 className="card-title">{hotel.title}</h3>
+              <h3 className="card-title">{hotel.hotel_name}</h3>
               <p className="card-description">{hotel.description}</p>
+              <h4>{hotel.location}</h4>
             </div>
           ))}
         </div>
@@ -173,9 +180,10 @@ useEffect(() => {
   </div>
   <div className="card-container">
     {guides.map((guide, index) => (
-      <div className="card" key={index}>
-        <img src={guide.profile_pic || "fallback-guide.jpg"} alt={guide.name} className="card-image" />
-        <h3 className="card-title">{guide.name}</h3>
+      <div className="card" key={index} onClick={() => navigate(`/view-guide/${guide.guide_id}`)}>
+        <img src={guide.profile_pic } alt={guide.guide_name} className="card-image" />
+        <h3 className="card-title">{guide.guide_name}</h3>
+        <h4>{guide.location}</h4>
         <p className="card-description">{guide.experience} years of experience</p>
       </div>
     ))}

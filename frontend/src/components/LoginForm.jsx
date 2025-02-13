@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import "./LoginForm.css";
 import axios from "axios";
 
@@ -11,7 +10,6 @@ function LoginForm({ setLoggedIn }) {
     const [error, setError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     const [showPassword, setShowPassword] = useState(false);
-
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -74,6 +72,14 @@ function LoginForm({ setLoggedIn }) {
             {error && <p className="error">{error}</p>}
             {successMessage && <p className="success">{successMessage}</p>}
             <button type="submit">Log In</button>
+
+            {/* ✅ Forgot Password & Sign Up Links */}
+            <p className="signup-link">
+                Don't have an account? <span onClick={() => navigate("/register")}>Sign Up</span>
+            </p>
+            <p className="forgot-password">
+                Forgot Password? <span onClick={() => navigate("/forgot-password")}>Click here</span>
+            </p>
         </form>
     );
 }

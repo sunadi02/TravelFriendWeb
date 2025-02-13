@@ -159,7 +159,7 @@ html, body {
   color: white;
   padding: 20px;
   position: relative;
-  margin-top: 1200px; /* Adjust according to the header height */
+  margin-top: 1400px; /* Adjust according to the header height */
 
 }
 
@@ -353,6 +353,10 @@ html, body {
   border-radius: 8px;
 }
 
+.discount-content p{
+  line-height: 20px;
+}
+
 /* Footer Styling */
 .homepage-footer {
   width: 100%;
@@ -444,10 +448,26 @@ html, body {
 }
 
 /* Section Styling */
-.places-section, .hotels-section {
-  width: 100%;
+.places-section {
+  width: 80%;
   margin: 40px 0;
   padding: 20px;
+}
+
+.hotels-section .card-container {
+  width: 1200px;
+  margin-left: 60px;
+  margin-bottom: 50px;
+}
+
+.hotels-section{
+  width: 80%;
+  margin-left: 200px;
+  
+}
+
+.guides-section .card-container{
+  margin-bottom: 40px;
 }
 
 .section-header {
@@ -466,6 +486,19 @@ html, body {
 .places-section .section-header h2{
   margin-left: 150px;
 }
+
+.hotels-section .section-header h2{
+  margin-left: 60px;
+}
+
+.hotels-section .see-all{
+ margin-right: 60px;
+}
+
+.places-section .see-all{
+  margin-right: 140px;
+ }
+
 
 .see-all {
   font-size: 16px;

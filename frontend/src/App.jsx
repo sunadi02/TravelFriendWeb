@@ -39,7 +39,7 @@ function App() {
             <Routes>
             {!loggedIn ? (
                     <>
-                        <Route path="/login" element={<LoginForm setLoggedIn={setLoggedIn} />} />
+                        <Route path="/login" element={<LoginForm setLoggedIn={setLoggedIn} setIsAdmin={setIsAdmin} />} />
                         <Route path="/register" element={<RegisterForm />} />
                         <Route path="/forgot-password" element={<ForgotPassword />} />
                         <Route path="/reset-password" element={<ResetPassword />} />

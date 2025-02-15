@@ -46,15 +46,14 @@ app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
 
+// User Login
 app.post("/api/user/login", (req, res) => {
     const { username, password } = req.body;
 
-    // Validate input
     if (!username || !password) {
         return res.status(400).json({ error: "Username and password are required." });
     }
 
-    // Check if user exists
     const sql = "SELECT * FROM users WHERE username = ?";
     db.query(sql, [username], async (err, results) => {
         if (err) {
@@ -67,30 +66,27 @@ app.post("/api/user/login", (req, res) => {
         }
 
         const user = results[0];
-
-        // Compare the provided password with the hashed password
         const isMatch = await bcrypt.compare(password, user.password_hash);
         if (!isMatch) {
             return res.status(401).json({ error: "Invalid password." });
         }
 
-        // Generate a JWT token
-        const token = jwt.sign({ user_id: user.user_id }, SECRET_KEY, { expiresIn: "1h" });
-
-        // Store the user ID in response
+        const token = { user_id: user.user_id };
         res.status(200).json({
             message: "Login successful!",
             token,
             user: {
-                id: user.user_id,  // Store this ID in localStorage
+                id: user.user_id,
                 username: user.username,
                 email: user.email,
                 user_name: user.user_name,
-            },
+                role: "user"
+            }
         });
     });
 });
 
+// Admin Login
 app.post("/api/admin/login", (req, res) => {
     const { username, password } = req.body;
 
@@ -104,13 +100,18 @@ app.post("/api/admin/login", (req, res) => {
 
         const admin = results[0];
 
-        res.json({
-            success: true,
-            admin_id: admin.admin_id,
-            username: admin.username
+        res.status(200).json({
+            message: "Login successful!",
+            token: { admin_id: admin.admin_id },
+            admin: {
+                id: admin.admin_id,
+                username: admin.username,
+                role: "admin"
+            }
         });
     });
 });
+
 
 app.post("/admin/add", (req, res) => {
     const { username, email, password } = req.body;

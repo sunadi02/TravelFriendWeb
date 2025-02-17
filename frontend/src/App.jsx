@@ -17,6 +17,13 @@ import MyProfile from "./components/MyProfile";
 import EditProfile from "./components/EditProfile";
 import BookingHistory from "./components/BookingHistory";
 import AdminDashboard from "./components/AdminDashboard";
+import ManageBookings from "./components/ManageBookings";
+import ManageUsers from "./components/ManageUsers";
+import ManageGuides from "./components/ManageGuides";
+import AddGuideForm from "./components/AddGuideForm";
+import ManageHotels from "./components/ManageHotels";
+import AddHotelForm from "./components/AddHotelForm";
+import ManageRooms from "./components/ManageRooms";
 
 function App() {
     const [loggedIn, setLoggedIn] = useState(false);
@@ -47,8 +54,18 @@ function App() {
                     </>
                 ) : isAdmin ? (
                     <>
+                        <Route path="/login" element={<LoginForm setLoggedIn={setLoggedIn} setIsAdmin={setIsAdmin} />} />
                         <Route path="/admin-dashboard" element={<AdminDashboard />} />
                         <Route path="*" element={<Navigate to="/admin-dashboard" />} />
+                        <Route path="/register" element={<RegisterForm />} />
+                        <Route path="/manage-bookings" element={<ManageBookings />} />
+                        <Route path="/manage-users" element={<ManageUsers />} />
+                        <Route path="/manage-guides" element={<ManageGuides />} />
+                        <Route path="/add-guide" element={<AddGuideForm />} />
+                        <Route path="/manage-hotels" element={<ManageHotels />} />
+                        <Route path="/add-hotel" element={<AddHotelForm />} />
+                        <Route path="/manage-rooms/:hotelId" element={<ManageRooms />} />
+
                     </>
                 ) : (
                     <>

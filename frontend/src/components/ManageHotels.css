@@ -1,0 +1,81 @@
+.manage-hotels {
+    padding: 20px;
+    width: 100%;
+    justify-content: center;
+    margin-right: 1000px;
+    border-collapse: collapse;
+    margin-left: 1150px;
+}
+
+.manage-hotels .header-section h1{
+    margin-bottom: 50px;
+    
+}
+
+.manage-hotels .add-hotel-btn {
+    width: 250px;
+    justify-content: center;
+    background-color: #050CB3;
+    color: white;
+    margin-left: 650px;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    display: block;
+    margin-bottom: 50px;
+}
+
+.manage-hotels .hotels-table {
+   width: 700px;
+    margin-right: 1000px;
+    border-collapse: collapse;
+    margin-left: 1000px;
+}
+
+.manage-hotels .hotels-table th, .hotels-table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+.manage-hotels .hotel-pic {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.manage-hotels .dots-icon {
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.manage-hotels .options-popup {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.manage-hotels .edit-popup {
+    position: fixed;
+    background: rgba(0, 0, 0, 0.5);
+    top: 0; left: 0;
+    width: 100%; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.manage-hotels .popup{
+    margin-top: 10px;
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    height: 80%;
+    overflow-y: scroll;
+}
+
+.manage-hotels .popup-buttons button {
+    margin: 5px;
+}

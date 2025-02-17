@@ -158,7 +158,7 @@ useEffect(() => {
       <section className="hotels-section">
         <div className="section-header">
           <h2>Explore Hotels</h2>
-          <a href="/all-hotels" className="see-all">See All</a>
+          <a href="/book-hotel" className="see-all">See All</a>
         </div>
         <div className="card-container">
           {hotels.map((hotel, index) => (
@@ -176,7 +176,7 @@ useEffect(() => {
 <section className="guides-section">
   <div className="section-header">
     <h2>Featured Guides</h2>
-    <a href="/all-guides" className="see-all">See All</a>
+    <a href="/search-guides" className="see-all">See All</a>
   </div>
   <div className="card-container">
     {guides.map((guide, index) => (

@@ -204,8 +204,6 @@ app.post("/api/forgot-password", async (req, res) => {
     });
 });
 
-// ✅ **GET User by ID**
-// index.js
 app.get("/api/user", (req, res) => {
     if (req.session.user) {
       const userId = req.session.user.user_id;
@@ -483,7 +481,7 @@ app.get("/api/hotels/:id", (req, res) => {
 app.post("/api/hotels", upload.single("image"), async (req, res) => {
     const { username, email, password, hotel_name, location, price_range, phone_number, ratings, description, latitude, longitude } = req.body;
 
-    if (!username || !email || !password || !hotel_name || !description || !location || !price_range || !phone_number || !latitude || !longitude) {
+    if (!username || !email || !password || !hotel_name || !description || !location || !price_range || !phone_number ) {
         return res.status(400).json({ error: "Missing required fields." });
     }
 
@@ -807,6 +805,25 @@ app.put("/api/guides/:id", upload.single("profile_pic"), (req, res) => {
     });
 });
 
+// ✅ DELETE Guide by ID
+app.delete("/api/guides/:id", (req, res) => {
+    const guideId = req.params.id;
+    const sql = "DELETE FROM guides WHERE guide_id = ?";
+
+    db.query(sql, [guideId], (err, result) => {
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({ error: "Failed to delete guide." });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: "Guide not found." });
+        }
+
+        res.status(200).json({ message: "Guide deleted successfully!" });
+    });
+});
+
 
 app.get("/api/guides", (req, res) => {
     const sql = "SELECT * FROM guides";
@@ -973,20 +990,19 @@ app.get("/api/bookings/:user_id", (req, res) => {
 
 
 
-// GET: Fetch all bookings for the logged-in user
+// GET: Fetch all bookings for the admin
 app.get("/api/bookings", (req, res) => {
-    const userId = req.userId; // Extracted from the token
-
     const sql = `
-        SELECT bookings.*, hotels.hotel_name, rooms.room_type, guides.guide_name
+        SELECT bookings.*, users.user_name, hotels.hotel_name, rooms.room_type, guides.guide_name
         FROM bookings
+        LEFT JOIN users ON bookings.user_id = users.user_id
         LEFT JOIN hotels ON bookings.hotel_id = hotels.hotel_id
         LEFT JOIN rooms ON bookings.room_id = rooms.room_id
         LEFT JOIN guides ON bookings.guide_id = guides.guide_id
-        WHERE bookings.user_id = ?
+        
     `;
 
-    db.query(sql, [userId], (err, results) => {
+    db.query(sql, (err, results) => {
         if (err) {
             console.error("Database error:", err);
             return res.status(500).json({ error: "Failed to fetch bookings." });
@@ -994,6 +1010,7 @@ app.get("/api/bookings", (req, res) => {
         res.status(200).json({ bookings: results });
     });
 });
+
 
 // DELETE: Cancel a booking
 app.delete("/api/bookings/:id", (req, res) => {

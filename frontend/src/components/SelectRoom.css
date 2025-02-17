@@ -102,6 +102,9 @@
   font-size: 28px; /* Bigger hotel name */
   margin-top: 1px;
   color: #050CB3;
+  margin-right: 400px;
+  width: 100%;
+  justify-self: center;
 }
 
 .hotelroom-details .description {
@@ -109,6 +112,7 @@
   color: #575757;
   margin-bottom: 15px;
   font-weight: bold;
+  width: 320px;
 }
 
 .hotel-info .location,

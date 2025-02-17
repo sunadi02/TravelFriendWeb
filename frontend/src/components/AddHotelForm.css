@@ -1,0 +1,67 @@
+.add-hotel-container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+h2 {
+    text-align: center;
+}
+
+.add-hotel-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.add-hotel-form input,
+.add-hotel-form textarea {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.upload-label {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.upload-label input {
+    margin-top: 5px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+button {
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.add-hotel-container .cancel-btn {
+    text-decoration: none;
+    margin-top: 10px;
+}
+
+button[type="submit"] {
+    background: #050CB3;
+    color: white;
+}
+
+button[type="button"] {
+    background: gray;
+    color: white;
+}
+
+button:hover {
+    opacity: 0.9;
+}

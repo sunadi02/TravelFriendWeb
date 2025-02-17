@@ -19,6 +19,7 @@
 
 .booking-table th, .booking-table td {
     padding: 10px;
+    background-color: rgb(64, 64, 64);
     border: 1px solid #ddd;
 }
 

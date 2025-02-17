@@ -1,0 +1,128 @@
+.manage-users {
+    padding: 20px;
+    max-width: 90%;
+    margin: auto;
+    height: 100vh;
+    background-color: #f4f4f4;
+}
+
+.header-section h1 {
+    margin-top: 0px;
+    margin-bottom: 20px;
+    margin-left: 670px;
+    width: 200px;
+}
+
+
+
+/* Add New User Button */
+.add-user-btn {
+    display: flex;
+    background-color: #050CB3;
+    color: white;
+    margin-left: 600px;
+    padding: 10px 15px;
+    border: none;
+    width: 300px;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+.add-user-btn:hover {
+    background-color: #323232;
+}
+
+
+table {
+    margin-top: 10px;
+    width: 1500px;
+    border-collapse: collapse;
+    background: rgb(98, 98, 98);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+thead {
+    background: #050CB3;
+    color: white;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+td {
+    color: #ffffff;
+}
+
+tr:hover {
+    background-color: #808080;
+}
+
+.profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.action-menu {
+    position: relative;
+}
+
+.action-menu button {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.dropdown {
+    position: absolute;
+    background: rgb(60, 60, 60);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdown button {
+    padding: 10px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+.dropdown button:hover {
+    background: #d4d4d4;
+}
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.popup input {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.popup button {
+    padding: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}

@@ -81,6 +81,7 @@ const SelectPaymentMethod = () => {
         hotel_id: isHotelBooking ? hotelId : null,
         room_id: isHotelBooking ? roomId : null,
         total_price: totalPrice,
+        commission: commission,
         status: "Confirmed",
       });
 

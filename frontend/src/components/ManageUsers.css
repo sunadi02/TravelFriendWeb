@@ -1,6 +1,6 @@
 .manage-users {
     padding: 20px;
-    max-width: 90%;
+    max-width: 100%;
     margin: auto;
     height: 100vh;
     background-color: #f4f4f4;
@@ -13,20 +13,19 @@
     width: 200px;
 }
 
-
-
 /* Add New User Button */
-.add-user-btn {
+.manage-users .add-user-btn {
     display: flex;
     background-color: #050CB3;
     color: white;
-    margin-left: 600px;
+    margin-left: 650px;
     padding: 10px 15px;
     border: none;
-    width: 300px;
+    width: 200px;
     margin-top: 50px;
     margin-bottom: 50px;
     border-radius: 5px;
+    justify-content: center;
     cursor: pointer;
     font-size: 16px;
     transition: background 0.3s;
@@ -126,3 +125,17 @@ tr:hover {
     margin-bottom: 10px;
     cursor: pointer;
 }
+
+.profile-edit-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-preview {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+

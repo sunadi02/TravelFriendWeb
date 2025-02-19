@@ -155,6 +155,7 @@ app.get("/api/admin/:id", (req, res) => {
 app.get("/api/admins/stats", (req, res) => {
     const usersQuery = "SELECT COUNT(*) AS totalUsers FROM users";
     const bookingsQuery = "SELECT COUNT(*) AS totalBookings FROM bookings";
+    const revenueQuery = "SELECT SUM(commission) AS totalRevenue FROM bookings"; // ✅ Add commission revenue
 
     db.query(usersQuery, (err, userResults) => {
         if (err) {
@@ -168,10 +169,17 @@ app.get("/api/admins/stats", (req, res) => {
                 return res.status(500).json({ error: "Failed to fetch total bookings." });
             }
 
-            // Send the stats response
-            res.status(200).json({
-                totalUsers: userResults[0].totalUsers,
-                totalBookings: bookingResults[0].totalBookings,
+            db.query(revenueQuery, (err, revenueResults) => {
+                if (err) {
+                    console.error("Database error (revenue):", err);
+                    return res.status(500).json({ error: "Failed to fetch revenue." });
+                }
+
+                res.status(200).json({
+                    totalUsers: userResults[0].totalUsers,
+                    totalBookings: bookingResults[0].totalBookings,
+                    totalRevenue: revenueResults[0].totalRevenue || 0, // If no bookings, default to 0
+                });
             });
         });
     });
@@ -980,12 +988,15 @@ app.post("/api/bookings", (req, res) => {
         return res.status(400).json({ error: "User ID and total price are required." });
     }
 
+    // Calculate 10% commission
+    const commission = (parseFloat(total_price) * 0.1).toFixed(2);
+
     const sql = `
-        INSERT INTO bookings (user_id, guide_id, hotel_id, room_id, total_price, status, created_at)
-        VALUES (?, ?, ?, ?, ?, 'Confirmed', NOW())
+        INSERT INTO bookings (user_id, guide_id, hotel_id, room_id, total_price, commission, status, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, 'Confirmed', NOW())
     `;
 
-    db.query(sql, [user_id, guide_id, hotel_id, room_id, total_price], (err, result) => {
+    db.query(sql, [user_id, guide_id, hotel_id, room_id, total_price, commission], (err, result) => {
         if (err) {
             console.error("Database error:", err);
             return res.status(500).json({ error: "Failed to create booking." });
@@ -993,6 +1004,7 @@ app.post("/api/bookings", (req, res) => {
         res.status(201).json({ message: "Booking created successfully!", bookingId: result.insertId });
     });
 });
+
 
 
 app.get("/api/bookings/:user_id", (req, res) => {

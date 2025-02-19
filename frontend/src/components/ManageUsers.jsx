@@ -9,6 +9,12 @@ const ManageUsers = () => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [editingUser, setEditingUser] = useState(null);
     const [showEditPopup, setShowEditPopup] = useState(false);
+    const [newProfilePic, setNewProfilePic] = useState(null);
+    const [previewImage, setPreviewImage] = useState(null);
+
+    // Search and filter options
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filterOption, setFilterOption] = useState("username"); // Default filter by username
 
     useEffect(() => {
         if (localStorage.getItem("isAdmin") !== "true") {
@@ -20,6 +26,15 @@ const ManageUsers = () => {
             .catch(error => console.error("Error fetching users:", error));
     }, [navigate]);
 
+    // Function to filter users based on selected criteria
+    const filteredUsers = users.filter(user => {
+        const value = filterOption === "created_at"
+            ? new Date(user.created_at).toLocaleDateString()
+            : user[filterOption]?.toLowerCase() || "";
+
+        return value.includes(searchTerm.toLowerCase());
+    });
+
     const toggleDropdown = (userId) => {
         setSelectedUser(selectedUser === userId ? null : userId);
     };
@@ -27,8 +42,15 @@ const ManageUsers = () => {
     const handleEdit = (user, e) => {
         e.stopPropagation();
         setEditingUser(user);
+        setPreviewImage(user.image || "/default-user.png");
         setShowEditPopup(true);
         setSelectedUser(null);
+    };
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        setNewProfilePic(file);
+        setPreviewImage(URL.createObjectURL(file)); // Show image preview
     };
 
     const handleDelete = async (userId, e) => {
@@ -46,14 +68,21 @@ const ManageUsers = () => {
     };
 
     const handleSaveChanges = async () => {
+        const formData = new FormData();
+        formData.append("username", editingUser.username);
+        formData.append("email", editingUser.email);
+        formData.append("phone_number", editingUser.phone_number);
+
+        if (newProfilePic) {
+            formData.append("image", newProfilePic);
+        }
+
         try {
-            await axios.put(`http://localhost:5000/api/user/${editingUser.user_id}`, {
-                username: editingUser.username,
-                email: editingUser.email,
-                phone_number: editingUser.phone_number
+            await axios.put(`http://localhost:5000/api/user/${editingUser.user_id}`, formData, {
+                headers: { "Content-Type": "multipart/form-data" },
             });
 
-            setUsers(users.map(user => user.user_id === editingUser.user_id ? editingUser : user));
+            setUsers(users.map(user => user.user_id === editingUser.user_id ? { ...editingUser, image: previewImage } : user));
             setShowEditPopup(false);
             alert("User updated successfully!");
         } catch (error) {
@@ -71,6 +100,21 @@ const ManageUsers = () => {
                 </button>
             </div>
 
+            {/* Search and Filter Section */}
+            <div className="search-filter">
+                <input
+                    type="text"
+                    placeholder={`Search by ${filterOption.replace("_", " ")}`}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <select value={filterOption} onChange={(e) => setFilterOption(e.target.value)}>
+                    <option value="username">Username</option>
+                    <option value="email">Email</option>
+                    <option value="created_at">Created Date</option>
+                </select>
+            </div>
+
             <table>
                 <thead>
                     <tr>
@@ -83,7 +127,7 @@ const ManageUsers = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {users.map((user) => (
+                    {filteredUsers.map((user) => (
                         <tr key={user.user_id}>
                             <td>
                                 <img src={user.image || "/default-user.png"} alt="User" className="profile-pic" />
@@ -112,6 +156,13 @@ const ManageUsers = () => {
                 <div className="popup-overlay">
                     <div className="popup">
                         <h2>Edit User</h2>
+
+                        <div className="profile-edit-section">
+                            <label>Profile Picture:</label>
+                            <img src={previewImage} alt="Profile Preview" className="profile-preview" />
+                            <input type="file" accept="image/*" onChange={handleFileChange} />
+                        </div>
+
                         <label>Username:</label>
                         <input
                             type="text"

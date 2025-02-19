@@ -11,6 +11,10 @@ const ManageHotels = () => {
     const [editingHotel, setEditingHotel] = useState(null);
     const [showEditPopup, setShowEditPopup] = useState(false);
     const [newHotelImage, setNewHotelImage] = useState(null);
+    const [previewImage, setPreviewImage] = useState(null);
+
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filterOption, setFilterOption] = useState("hotel_name");
 
     useEffect(() => {
         if (localStorage.getItem("isAdmin") !== "true") {
@@ -22,6 +26,15 @@ const ManageHotels = () => {
             .catch(error => console.error("Error fetching hotels:", error));
     }, [navigate]);
 
+    // Filtering logic
+    const filteredHotels = hotels.filter(hotel => {
+        const value = filterOption === "ratings"
+            ? hotel[filterOption].toString()
+            : hotel[filterOption]?.toLowerCase() || "";
+
+        return value.includes(searchTerm.toLowerCase());
+    });
+
     const toggleDropdown = (hotelId) => {
         setSelectedHotel(selectedHotel === hotelId ? null : hotelId);
     };
@@ -29,8 +42,15 @@ const ManageHotels = () => {
     const handleEdit = (hotel, e) => {
         e.stopPropagation();
         setEditingHotel(hotel);
+        setPreviewImage(hotel.image || hotelPlaceholder);
         setShowEditPopup(true);
         setSelectedHotel(null);
+    };
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        setNewHotelImage(file);
+        setPreviewImage(URL.createObjectURL(file));
     };
 
     const handleDelete = async (hotelId, e) => {
@@ -45,10 +65,6 @@ const ManageHotels = () => {
                 alert("Failed to delete hotel.");
             }
         }
-    };
-
-    const handleFileChange = (e) => {
-        setNewHotelImage(e.target.files[0]);
     };
 
     const handleSaveChanges = async () => {
@@ -74,7 +90,7 @@ const ManageHotels = () => {
                 headers: { "Content-Type": "multipart/form-data" },
             });
 
-            setHotels(hotels.map(hotel => hotel.hotel_id === editingHotel.hotel_id ? editingHotel : hotel));
+            setHotels(hotels.map(hotel => hotel.hotel_id === editingHotel.hotel_id ? { ...editingHotel, image: previewImage } : hotel));
             setShowEditPopup(false);
             alert("Hotel updated successfully!");
         } catch (error) {
@@ -92,6 +108,23 @@ const ManageHotels = () => {
                 </button>
             </div>
 
+            {/* Search and Filter */}
+            <div className="search-filter">
+                <input
+                    type="text"
+                    placeholder={`Search by ${filterOption.replace("_", " ")}`}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <select value={filterOption} onChange={(e) => setFilterOption(e.target.value)}>
+                    <option value="hotel_name">Hotel Name</option>
+                    <option value="username">Username</option>
+                    <option value="email">Email</option>
+                    <option value="location">Location</option>
+                    <option value="ratings">Ratings</option>
+                </select>
+            </div>
+
             <table>
                 <thead>
                     <tr>
@@ -107,8 +140,8 @@ const ManageHotels = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {hotels.map((hotel) => (
-                        <tr key={hotel.hotel_id} onClick={() => navigate(`/manage-rooms/${hotel.hotel_id}`)} >
+                    {filteredHotels.map((hotel) => (
+                        <tr key={hotel.hotel_id} onClick={() => navigate(`/manage-rooms/${hotel.hotel_id}`)}>
                             <td>
                                 <img src={hotel.image || hotelPlaceholder} alt="Hotel" className="hotel-pic" />
                             </td>
@@ -120,15 +153,15 @@ const ManageHotels = () => {
                             <td>{hotel.phone_number}</td>
                             <td>{hotel.ratings}</td>
                             <td>
-                            <div className="action-menu">
-                    <button onClick={(e) => { e.stopPropagation(); toggleDropdown(hotel.hotel_id); }}>⋮</button>
-                    {selectedHotel === hotel.hotel_id && (
-                        <div className="dropdown">
-                            <button onClick={(e) => { e.stopPropagation(); handleEdit(hotel, e); }}>Edit</button>
-                            <button onClick={(e) => { e.stopPropagation(); handleDelete(hotel.hotel_id, e); }}>Delete</button>
-                        </div>
-                    )}
-                </div>
+                                <div className="action-menu">
+                                    <button onClick={(e) => { e.stopPropagation(); toggleDropdown(hotel.hotel_id); }}>⋮</button>
+                                    {selectedHotel === hotel.hotel_id && (
+                                        <div className="dropdown">
+                                            <button onClick={(e) => { e.stopPropagation(); handleEdit(hotel, e); }}>Edit</button>
+                                            <button onClick={(e) => { e.stopPropagation(); handleDelete(hotel.hotel_id, e); }}>Delete</button>
+                                        </div>
+                                    )}
+                                </div>
                             </td>
                         </tr>
                     ))}
@@ -139,84 +172,18 @@ const ManageHotels = () => {
                 <div className="popup-overlay">
                     <div className="popup">
                         <h2>Edit Hotel</h2>
+
+                        <div className="profile-edit-section">
+                            <label>Hotel Image:</label>
+                            <img src={previewImage} alt="Hotel Preview" className="profile-preview" />
+                            <input type="file" accept="image/*" onChange={handleFileChange} />
+                        </div>
+
                         <label>Hotel Name:</label>
-                        <input
-                            type="text"
-                            value={editingHotel.hotel_name}
-                            onChange={(e) => setEditingHotel({ ...editingHotel, hotel_name: e.target.value })}
-                        />
-
-                        <label>Username:</label>
-                        <input
-                            type="text"
-                            value={editingHotel.username}
-                            onChange={(e) => setEditingHotel({ ...editingHotel, username: e.target.value })}
-                        />
-
-                        <label>Email:</label>
-                        <input
-                            type="email"
-                            value={editingHotel.email}
-                            onChange={(e) => setEditingHotel({ ...editingHotel, email: e.target.value })}
-                        />
-
-                        <label>Password:</label>
-                        <input
-                            type="password"
-                            value={editingHotel.password}
-                            onChange={(e) => setEditingHotel({ ...editingHotel, password: e.target.value })}
-                        />
+                        <input type="text" value={editingHotel.hotel_name} onChange={(e) => setEditingHotel({ ...editingHotel, hotel_name: e.target.value })} />
 
                         <label>Location:</label>
-                        <input
-                            type="text"
-                            value={editingHotel.location}
-                            onChange={(e) => setEditingHotel({ ...editingHotel, location: e.target.value })}
-                        />
-
-                        <label>Price Range:</label>
-                        <input
-                            type="text"
-                            value={editingHotel.price_range}
-                            onChange={(e) => setEditingHotel({ ...editingHotel, price_range: e.target.value })}
-                        />
-
-                        <label>Phone Number:</label>
-                        <input
-                            type="text"
-                            value={editingHotel.phone_number}
-                            onChange={(e) => setEditingHotel({ ...editingHotel, phone_number: e.target.value })}
-                        />
-
-                        <label>Ratings:</label>
-                        <input
-                            type="number"
-                            value={editingHotel.ratings}
-                            onChange={(e) => setEditingHotel({ ...editingHotel, ratings: e.target.value })}
-                        />
-
-                        <label>Latitude:</label>
-                        <input
-                            type="text"
-                            value={editingHotel.latitude}
-                            onChange={(e) => setEditingHotel({ ...editingHotel, latitude: e.target.value })}
-                        />
-
-                        <label>Longitude:</label>
-                        <input
-                            type="text"
-                            value={editingHotel.longitude}
-                            onChange={(e) => setEditingHotel({ ...editingHotel, longitude: e.target.value })}
-                        />
-
-                        <label>Description:</label>
-                        <textarea
-                            value={editingHotel.description}
-                            onChange={(e) => setEditingHotel({ ...editingHotel, description: e.target.value })}
-                        ></textarea>
-
-                        <label>Upload New Hotel Image:</label>
-                        <input type="file" accept="image/*" onChange={handleFileChange} />
+                        <input type="text" value={editingHotel.location} onChange={(e) => setEditingHotel({ ...editingHotel, location: e.target.value })} />
 
                         <div className="popup-buttons">
                             <button onClick={handleSaveChanges} className="save-btn">Save Changes</button>

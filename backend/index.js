@@ -137,7 +137,10 @@ app.get("/api/admin/:id", (req, res) => {
 
     const query = "SELECT * FROM admins WHERE admin_id = ?";
     db.query(query, [adminId], (err, results) => {
-        if (err) return res.status(500).json({ error: "Database error" });
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({ error: "Database error" });
+        }
 
         if (results.length === 0) {
             return res.status(404).json({ error: "Admin not found" });
@@ -146,6 +149,35 @@ app.get("/api/admin/:id", (req, res) => {
         res.json(results[0]);
     });
 });
+
+
+// GET: Fetch admin dashboard statistics (total users & total bookings)
+app.get("/api/admins/stats", (req, res) => {
+    const usersQuery = "SELECT COUNT(*) AS totalUsers FROM users";
+    const bookingsQuery = "SELECT COUNT(*) AS totalBookings FROM bookings";
+
+    db.query(usersQuery, (err, userResults) => {
+        if (err) {
+            console.error("Database error (users):", err);
+            return res.status(500).json({ error: "Failed to fetch total users." });
+        }
+
+        db.query(bookingsQuery, (err, bookingResults) => {
+            if (err) {
+                console.error("Database error (bookings):", err);
+                return res.status(500).json({ error: "Failed to fetch total bookings." });
+            }
+
+            // Send the stats response
+            res.status(200).json({
+                totalUsers: userResults[0].totalUsers,
+                totalBookings: bookingResults[0].totalBookings,
+            });
+        });
+    });
+});
+
+
 
 // Set up nodemailer transporter
 const transporter = nodemailer.createTransport({

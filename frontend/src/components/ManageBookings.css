@@ -6,17 +6,51 @@
     background-color: #f4f4f4;
 }
 
+/* Search and Filter Section */
+.search-filter-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    gap: 10px;
+}
+
+.search-bar {
+    width: 70%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.filter-dropdown {
+    width: 25%;
+    height: 40px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 15px;
+
+}
+
+/* No results message */
+.no-results {
+    text-align: center;
+    font-weight: bold;
+    color: red;
+}
+
+
 h1 {
     margin-top: 10px;
     text-align: center;
 }
 
-table {
+.manage-bookings table {
     width: 1400px;
     margin-right: 150px;
-    margin-top: 200px;
+    margin-top: 0px;
     border-collapse: collapse;
-    background: white;
+    background: rgb(55, 55, 55);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 

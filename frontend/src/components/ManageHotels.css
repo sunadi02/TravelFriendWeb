@@ -71,6 +71,7 @@
     margin-top: 10px;
     background: white;
     padding: 20px;
+    justify-content: space-between;
     border-radius: 5px;
     height: 80%;
     overflow-y: scroll;

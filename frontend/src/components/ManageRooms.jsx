@@ -96,7 +96,7 @@ const ManageRooms = () => {
                             </td>
                             <td>{room.room_type}</td>
                             <td>{room.price_per_night}</td>
-                            <td>{room.availability ? "Available" : "Not Available"}</td>
+                            <td>{room.availability ? "Not Available" : "Available"}</td>
                             <td>
                                 <div className="action-menu">
                                     <button onClick={() => toggleDropdown(room.room_id)}>⋮</button>
@@ -136,8 +136,8 @@ const ManageRooms = () => {
                             value={editingRoom.availability}
                             onChange={(e) => setEditingRoom({ ...editingRoom, availability: e.target.value })}
                         >
-                            <option value="1">Available</option>
-                            <option value="0">Not Available</option>
+                            <option value="1">Not Available</option>
+                            <option value="0">Available</option>
                         </select>
 
                         <div className="popup-buttons">

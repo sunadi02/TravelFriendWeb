@@ -20,7 +20,7 @@ const AdminDashboard = () => {
         }
 
         // Fetch statistics
-        axios.get("http://localhost:5000/api/admin/stats")
+        axios.get("http://localhost:5000/api/admins/stats")
             .then(response => {
                 setTotalUsers(response.data.totalUsers);
                 setPremiumUsers(response.data.premiumUsers);
@@ -81,7 +81,7 @@ const AdminDashboard = () => {
                 </div>
                 <div className="stats1">
                 <div className="card cancellations"><h4>Total Cancellations</h4><p>{cancellations}</p></div>
-                <div className="card revenue"><h4>Total Revenue</h4><p>LKR {totalRevenue.toLocaleString()}</p></div>
+                <div className="card revenue"><h4>Total Revenue</h4><p>LKR {totalRevenue}</p></div>
                 </div>
             </div>
 

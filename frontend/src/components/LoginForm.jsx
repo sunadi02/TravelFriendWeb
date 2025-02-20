@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./LoginForm.css";
 import axios from "axios";
 
-function LoginForm({ setLoggedIn, setIsAdmin }) {
+function LoginForm({ setLoggedIn, setIsAdmin, setIsGuide, setIsHotel }) {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ username: "", password: "" });
 
@@ -30,10 +30,45 @@ function LoginForm({ setLoggedIn, setIsAdmin }) {
         }
 
         try {
+            const guideResponse = await axios.post("http://localhost:5000/api/guide/login", formData);
+            if (guideResponse.data.guide) {
+                localStorage.setItem("token", guideResponse.data.token);
+                localStorage.setItem("role", "guide");
+                setIsAdmin(false);
+                setIsGuide(true);  // ✅ Add this line
+                setLoggedIn(true);
+                setSuccessMessage("Logged in successfully as Guide!");
+                navigate("/guide-dashboard");
+                return;
+            }
+        } catch (guideError) {
+            console.log("Guide login failed, trying user login...");
+        }
+
+        try {
+            const hotelResponse = await axios.post("http://localhost:5000/api/hotel/login", formData);
+            if (hotelResponse.data.hotel) {
+                localStorage.setItem("token", hotelResponse.data.token);
+                localStorage.setItem("role", "hotel");
+                setIsGuide(false);
+                setIsHotel(true);  // ✅ Add this line
+                setLoggedIn(true);
+                setSuccessMessage("Logged in successfully as Hotel!");
+                navigate("/hotel-dashboard");
+                return;
+            }
+        } catch (hotelError) {
+            console.log("Hotel login failed, trying user login...");
+        }
+        
+
+        try {
             const userResponse = await axios.post("http://localhost:5000/api/user/login", formData);
             localStorage.setItem("token", userResponse.data.token);
             localStorage.setItem("isAdmin", "false");
+            setIsHotel(false);
             setIsAdmin(false);
+            setIsGuide(false);
             setLoggedIn(true);
             setSuccessMessage("Logged in successfully!");
             navigate("/");

@@ -1,15 +1,13 @@
 /* General Styling */
-.admin-dashboard {
+.hotel-dashboard {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    width: 1550px;
-
     background-color: #f4f4f4;
 }
 
 /* Navbar */
-.admin-navbar {
+.hotel-navbar {
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -22,16 +20,16 @@
     z-index: 100;
 }
 
-.logo {
+.hotel-dashboard .logo {
     font-size: 24px;
     font-weight: bold;
 }
 
-.logo-blue {
+.hotel-dashboard .logo-blue {
     color: #1f26fb;
 }
 
-.header-nav a {
+.hotel-dashboard .header-nav a {
     color: white;
     text-decoration: none;
     margin: 0 20px;
@@ -39,12 +37,11 @@
     transition: color 0.3s;
 }
 
-.header-nav a:hover {
+.hotel-dashboard .header-nav a:hover {
     color: #ccc;
 }
 
-/* Admin Profile & Notifications */
-.header-right {
+.hotel-dashboard .header-right {
     display: flex;
     align-items: center;
 }
@@ -71,7 +68,7 @@
     cursor: pointer;
 }
 
-/* Admin Profile Popup */
+/* Hotel Profile Popup */
 .profile-popup {
     position: absolute;
     top: 50px;
@@ -110,86 +107,88 @@
 }
 
 /* Overview Section */
-.overview {
+.hotel-dashboard .overview {
     padding: 30px;
+}
+
+.hotel-dashboard .overview h2 {
+    color: #2c3e50;
     margin-bottom: 20px;
 }
 
-/* Main content should take available space */
-.overview, .charts {
-    flex-grow: 1; /* Ensures content expands */
-    padding-bottom: 60px; /* Space to avoid overlap with footer */
-}
-
-.overview h2{
-    padding: 30px;
-    margin-bottom: px;
-}
-
-.stats {
+.hotel-dashboard .stats, .stats1 {
     display: flex;
-    justify-content: space-around;
     gap: 20px;
-    width: 1400px;
     margin-bottom: 20px;
 }
 
-.stats1 {
-    display: flex;
-    justify-content: space-around;
-    gap: 20px;
-    width: 1400px;
-}
-
-.card {
-    background: white;
+.hotel-dashboard .card {
+    flex: 1;
+    background-color: white;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-.card a{
-    text-decoration: none;
-    color: #323232;
+
+.hotel-dashboard .card h4 {
+    color: #7f8c8d;
+    margin-bottom: 10px;
 }
-.usercount {background: #fffde9; color: rgb(50, 50, 50); }
-.premium { background: #ffecd4; color: rgb(50, 50, 50); }
-.bookings { background: #e4f4fc; color: #323232; text-decoration: none;}
-.cancellations { background: #ffeaea; color: rgb(50, 50, 50); text-decoration: none;}
-.revenue { background: #eeffef; color: rgb(50, 50, 50); text-decoration: none;}
+
+.hotel-dashboard .card p {
+    font-size: 24px;
+    color: #2c3e50;
+    font-weight: bold;
+}
 
 /* Charts Section */
-.charts {
+.hotel-dashboard .charts {
     display: flex;
-    justify-content: space-around;
-    margin-top: 30px;
+    gap: 20px;
+    padding: 0 30px;
 }
 
-.chart {
-    background: white;
+.hotel-dashboard .chart {
+    flex: 1;
+    background-color: white;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.chart img {
+.hotel-dashboard .chart h4 {
+    color: #7f8c8d;
+    margin-bottom: 20px;
+}
+
+.hotel-dashboard .chart img {
     width: 100%;
-    height: auto;
+    border-radius: 6px;
 }
 
 /* Footer */
-.admin-footer {
-    position: fixed; /* Keeps footer at bottom */
-    bottom: 0; /* Stick to bottom */
-    left: 0; /* Align to left */
-    width: 100%; /* Full width */
-    background: #050CB3; /* Match header */
-    color: white;
+.hotel-dashboard .hotel-footer {
+    margin-top: auto;
+    padding: 20px;
     text-align: center;
-    padding: 15px 0;
-    font-size: 14px;
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
-    /* padding: 20px; */
+    background-color: #ffffff;
+    color: #7f8c8d;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .stats, .stats1, .charts {
+        flex-direction: column;
+    }
+
+    .hotel-navbar {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .header-nav {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
 }

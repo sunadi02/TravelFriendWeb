@@ -73,11 +73,11 @@ const AdminDashboard = () => {
 
             {/* Overview Section */}
             <div className="overview">
-                <h2>Dashboard Overview</h2>
+                <h2>Admin Dashboard Overview</h2>
                 <div className="stats">
-                    <div className="card"><h4>Total Users</h4><p>{totalUsers}</p></div>
+                    <div className="card usercount"><a href="/manage-users"><h4>Total Users</h4></a><p>{totalUsers}</p></div>
                     <div className="card premium"><h4>Premium Users</h4><p>{premiumUsers}</p></div>
-                    <div className="card bookings"><h4>Total Bookings</h4><p>{totalBookings}</p></div>
+                    <div className="card bookings"><a href="/manage-bookings"><h4>Total Bookings</h4></a><p>{totalBookings}</p></div>
                 </div>
                 <div className="stats1">
                 <div className="card cancellations"><h4>Total Cancellations</h4><p>{cancellations}</p></div>

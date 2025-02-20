@@ -112,6 +112,86 @@ app.post("/api/admin/login", (req, res) => {
     });
 });
 
+// Guide Login
+app.post("/api/guide/login", (req, res) => {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({ error: "Username and password are required." });
+    }
+
+    const sql = "SELECT * FROM guides WHERE username = ?";
+    db.query(sql, [username], async (err, results) => {
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({ error: "Server error." });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ error: "Guide not found." });
+        }
+
+        const guide = results[0];
+        const isMatch = await bcrypt.compare(password, guide.password_hash); // Compare hashed password
+        if (!isMatch) {
+            return res.status(401).json({ error: "Invalid password." });
+        }
+
+        const token = { guide_id: guide.guide_id };
+        res.status(200).json({
+            message: "Guide login successful!",
+            token,
+            guide: {
+                id: guide.guide_id,
+                username: guide.username,
+                email: guide.email,
+                guide_name: guide.guide_name,
+                role: "guide"
+            }
+        });
+    });
+});
+
+// Hotel Login Route
+app.post("/api/hotel/login", (req, res) => {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({ error: "Username and password are required." });
+    }
+
+    const sql = "SELECT * FROM hotels WHERE username = ?";
+    db.query(sql, [username], async (err, results) => {
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({ error: "Server error." });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ error: "Hotel not found." });
+        }
+
+        const hotel = results[0];
+        const isMatch = await bcrypt.compare(password, hotel.password_hash); // Compare hashed password
+        if (!isMatch) {
+            return res.status(401).json({ error: "Invalid password." });
+        }
+
+        const token = { hotel_id: hotel.hotel_id };
+        res.status(200).json({
+            message: "Hotel login successful!",
+            token,
+            hotel: {
+                id: hotel.hotel_id,
+                username: hotel.username,
+                email: hotel.email,
+                hotel_name: hotel.hotel_name,
+                role: "hotel"
+            }
+        });
+    });
+});
+
 
 app.post("/admin/add", (req, res) => {
     const { username, email, password } = req.body;
@@ -185,6 +265,51 @@ app.get("/api/admins/stats", (req, res) => {
     });
 });
 
+// Guide Statistics Route
+app.get("/api/guides/stats", (req, res) => {
+    const guideId = req.user.guide_id; // Assuming you're using JWT middleware to extract guide ID
+
+    const sql = `
+        SELECT 
+            (SELECT COUNT(*) FROM bookings WHERE guide_id = ? AND status = 'upcoming') AS upcomingHires,
+            (SELECT AVG(rating) FROM reviews WHERE guide_id = ?) AS averageRating,
+            (SELECT SUM(earnings) FROM bookings WHERE guide_id = ?) AS totalEarnings,
+            (SELECT COUNT(*) FROM bookings WHERE guide_id = ? AND status = 'completed') AS completedTours,
+            (SELECT COUNT(*) FROM bookings WHERE guide_id = ? AND status = 'cancelled') AS cancelledTours
+    `;
+
+    db.query(sql, [guideId, guideId, guideId, guideId, guideId], (err, results) => {
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({ error: "Failed to fetch guide stats." });
+        }
+
+        res.status(200).json(results[0]);
+    });
+});
+
+// Hotel Statistics Route
+app.get("/api/hotels/stats", (req, res) => {
+    const hotelId = req.user.hotel_id; // Assuming you're using JWT middleware to extract hotel ID
+
+    const sql = `
+        SELECT 
+            (SELECT COUNT(*) FROM bookings WHERE hotel_id = ? AND status = 'upcoming') AS upcomingBookings,
+            (SELECT AVG(rating) FROM reviews WHERE hotel_id = ?) AS averageRating,
+            (SELECT SUM(price) FROM bookings WHERE hotel_id = ?) AS totalRevenue,
+            (SELECT COUNT(*) FROM bookings WHERE hotel_id = ? AND status = 'completed') AS completedBookings,
+            (SELECT COUNT(*) FROM bookings WHERE hotel_id = ? AND status = 'cancelled') AS cancelledBookings
+    `;
+
+    db.query(sql, [hotelId, hotelId, hotelId, hotelId, hotelId], (err, results) => {
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({ error: "Failed to fetch hotel stats." });
+        }
+
+        res.status(200).json(results[0]);
+    });
+});
 
 
 // Set up nodemailer transporter

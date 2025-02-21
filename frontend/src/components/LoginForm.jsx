@@ -26,7 +26,7 @@ function LoginForm({ setLoggedIn, setIsAdmin, setIsGuide, setIsHotel }) {
                 return;
             }
         } catch (adminError) {
-            console.log("Admin login failed, trying user login...");
+            console.log("Admin login failed, trying guide login...");
         }
 
         try {
@@ -34,15 +34,16 @@ function LoginForm({ setLoggedIn, setIsAdmin, setIsGuide, setIsHotel }) {
             if (guideResponse.data.guide) {
                 localStorage.setItem("token", guideResponse.data.token);
                 localStorage.setItem("role", "guide");
+                localStorage.setItem("guide_id", guideResponse.data.guide.id);  // Store guide_id
                 setIsAdmin(false);
-                setIsGuide(true);  // ✅ Add this line
+                setIsGuide(true);  // ✅ Set guide status
                 setLoggedIn(true);
                 setSuccessMessage("Logged in successfully as Guide!");
                 navigate("/guide-dashboard");
                 return;
             }
         } catch (guideError) {
-            console.log("Guide login failed, trying user login...");
+            console.log("Guide login failed, trying hotel login...");
         }
 
         try {
@@ -51,7 +52,7 @@ function LoginForm({ setLoggedIn, setIsAdmin, setIsGuide, setIsHotel }) {
                 localStorage.setItem("token", hotelResponse.data.token);
                 localStorage.setItem("role", "hotel");
                 setIsGuide(false);
-                setIsHotel(true);  // ✅ Add this line
+                setIsHotel(true);  // ✅ Set hotel status
                 setLoggedIn(true);
                 setSuccessMessage("Logged in successfully as Hotel!");
                 navigate("/hotel-dashboard");

@@ -23,8 +23,10 @@ import AddGuideForm from "./components/AddGuideForm";
 import ManageHotels from "./components/ManageHotels";
 import AddHotelForm from "./components/AddHotelForm";
 import ManageRooms from "./components/ManageRooms";
-import GuideDashboard from "./components/GuideDashboard"; 
+import GuideDashboard from "./components/GuideDashboard";
 import HotelDashboard from "./components/HotelDashboard";
+import GuideBookings from "./components/GuideBookings";
+
 
 function App() {
     const [loggedIn, setLoggedIn] = useState(false);
@@ -53,7 +55,7 @@ function App() {
             <Routes>
                 {!loggedIn ? (
                     <>
-                        <Route path="/login" element={<LoginForm setLoggedIn={setLoggedIn} setIsAdmin={setIsAdmin} setIsGuide={setIsGuide} setIsHotel={setIsHotel}/>} />
+                        <Route path="/login" element={<LoginForm setLoggedIn={setLoggedIn} setIsAdmin={setIsAdmin} setIsGuide={setIsGuide} setIsHotel={setIsHotel} />} />
                         <Route path="/register" element={<RegisterForm />} />
                         <Route path="/forgot-password" element={<ForgotPassword />} />
                         <Route path="/reset-password" element={<ResetPassword />} />
@@ -61,9 +63,8 @@ function App() {
                     </>
                 ) : isAdmin ? (
                     <>
-                        <Route path="/login" element={<LoginForm setLoggedIn={setLoggedIn} setIsAdmin={setIsAdmin} setIsGuide={setIsGuide} setIsHotel={setIsHotel}/>} />
+                        <Route path="/login" element={<LoginForm setLoggedIn={setLoggedIn} setIsAdmin={setIsAdmin} setIsGuide={setIsGuide} setIsHotel={setIsHotel} />} />
                         <Route path="/admin-dashboard" element={<AdminDashboard />} />
-                        <Route path="*" element={<Navigate to="/admin-dashboard" />} />
                         <Route path="/register" element={<RegisterForm />} />
                         <Route path="/manage-bookings" element={<ManageBookings />} />
                         <Route path="/manage-users" element={<ManageUsers />} />
@@ -72,14 +73,15 @@ function App() {
                         <Route path="/manage-hotels" element={<ManageHotels />} />
                         <Route path="/add-hotel" element={<AddHotelForm />} />
                         <Route path="/manage-rooms/:hotelId" element={<ManageRooms />} />
+                        <Route path="*" element={<Navigate to="/admin-dashboard" />} />
                     </>
                 ) : isGuide ? (
                     <>
                         <Route path="/login" element={<LoginForm setLoggedIn={setLoggedIn} setIsAdmin={setIsAdmin} setIsGuide={setIsGuide} setIsHotel={setIsHotel} />} />
                         <Route path="/guide-dashboard" element={<GuideDashboard />} />
+                        <Route path="/guide-bookings" element={<GuideBookings />}/>
                         <Route path="*" element={<Navigate to="/guide-dashboard" />} />
                     </>
-
                 ) : isHotel ? (
                     <>
                         <Route path="/login" element={<LoginForm setLoggedIn={setLoggedIn} setIsAdmin={setIsAdmin} setIsGuide={setIsGuide} setIsHotel={setIsHotel} />} />

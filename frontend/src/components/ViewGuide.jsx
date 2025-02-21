@@ -51,7 +51,7 @@ if (!guide) return <h2>Guide not found!</h2>;
         <div className="header-right">
           <button className="notification-bell">🔔</button>
           <div className="user-info">
-            <img src={pp} alt="Profile" className="profile-pic" />
+            <img src={guide.profile_pic ||pp} alt="Profile" className="profile-pic" />
             <span>John Doe</span> {/* Replace with dynamic user name if available */}
           </div>
         </div>

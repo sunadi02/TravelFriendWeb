@@ -5,7 +5,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const db = require("./db");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+
 const nodemailer = require("nodemailer");
 
 const router = express.Router();
@@ -71,7 +71,8 @@ app.post("/api/user/login", (req, res) => {
             return res.status(401).json({ error: "Invalid password." });
         }
 
-        const token = { user_id: user.user_id };
+        // Return plain token (user ID)
+        const token = user.user_id.toString(); // Convert to string if necessary
         res.status(200).json({
             message: "Login successful!",
             token,
@@ -132,12 +133,13 @@ app.post("/api/guide/login", (req, res) => {
         }
 
         const guide = results[0];
-        const isMatch = await bcrypt.compare(password, guide.password_hash); // Compare hashed password
+        const isMatch = await bcrypt.compare(password, guide.password_hash);
         if (!isMatch) {
             return res.status(401).json({ error: "Invalid password." });
         }
 
-        const token = { guide_id: guide.guide_id };
+        // Return plain token (guide ID)
+        const token = guide.guide_id.toString(); // Convert to string if necessary
         res.status(200).json({
             message: "Guide login successful!",
             token,
@@ -265,28 +267,39 @@ app.get("/api/admins/stats", (req, res) => {
     });
 });
 
-// // Guide Statistics Route
-// app.get("/api/guides/stats", (req, res) => {
-//     const guideId = req.user.guide_id;
 
-//     const sql = `
-//         SELECT 
-//             (SELECT COUNT(*) FROM bookings WHERE guide_id = ? AND status = 'upcoming') AS upcomingHires,
-//             (SELECT AVG(rating) FROM reviews WHERE guide_id = ?) AS averageRating,
-//             (SELECT SUM(earnings) FROM bookings WHERE guide_id = ?) AS totalEarnings,
-//             (SELECT COUNT(*) FROM bookings WHERE guide_id = ? AND status = 'completed') AS completedTours,
-//             (SELECT COUNT(*) FROM bookings WHERE guide_id = ? AND status = 'cancelled') AS cancelledTours
-//     `;
+app.get("/api/guides/stats", (req, res) => {
+    const guideId = req.query.guide_id;
 
-//     db.query(sql, [guideId, guideId, guideId, guideId, guideId], (err, results) => {
-//         if (err) {
-//             console.error("Database error:", err);
-//             return res.status(500).json({ error: "Failed to fetch guide stats." });
-//         }
+    if (!guideId) {
+        return res.status(400).json({ error: "Guide ID is required." });
+    }
 
-//         res.status(200).json(results[0]);
-//     });
-// });
+    const sql = `
+        SELECT
+            COUNT(CASE WHEN status = 'active' THEN 1 END) AS upcomingHires,
+            (SELECT rating FROM guides WHERE guide_id = ?) AS averageRating, 
+            COUNT(CASE WHEN status = 'completed' THEN 1 END) AS completedTours,
+            COUNT(CASE WHEN status = 'cancelled' THEN 1 END) AS cancelledTours
+        FROM bookings
+        WHERE guide_id = ?;
+    `;
+
+    db.query(sql, [guideId, guideId], (err, results) => {
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({ error: "Failed to fetch guide stats." });
+        }
+
+        const stats = results[0];
+        res.status(200).json({
+            upcomingHires: stats.upcomingHires || 0,
+            averageRating: stats.averageRating || 0,
+            completedTours: stats.completedTours || 0,
+            cancelledTours: stats.cancelledTours || 0,
+        });
+    });
+});
 
 // Hotel Statistics Route
 // app.get("/api/hotels/stats", (req, res) => {
@@ -1042,6 +1055,50 @@ app.get("/api/guides/:id", (req, res) => {
         res.status(200).json(guide);
     });
 });
+
+app.get("/api/guide/bookings/:guide_id", (req, res) => {
+    const guideId = req.params.guide_id;
+
+    const sql = `
+        SELECT 
+            bookings.total_price, 
+            bookings.commission, 
+            bookings.guide_fee, 
+            bookings.created_at, 
+            users.user_name
+        FROM bookings
+        LEFT JOIN users ON bookings.user_id = users.user_id
+        WHERE bookings.guide_id = ?;
+    `;
+
+    db.query(sql, [guideId], (err, results) => {
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({ error: "Failed to fetch bookings." });
+        }
+        res.status(200).json({ bookings: results });
+    });
+});
+
+app.get("/api/guides/total-earnings/:guide_id", (req, res) => {
+    const guideId = req.params.guide_id;
+
+    const sql = `
+        SELECT SUM(guide_fee) AS total_earnings
+        FROM bookings
+        WHERE guide_id = ?;
+    `;
+
+    db.query(sql, [guideId], (err, results) => {
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({ error: "Failed to fetch total earnings." });
+        }
+
+        const totalEarnings = results[0].total_earnings || 0;
+        res.status(200).json({ totalEarnings });
+    });
+});
   
   
   // Get all rooms
@@ -1129,13 +1186,15 @@ app.post("/api/bookings", (req, res) => {
 
     // Calculate 10% commission
     const commission = (parseFloat(total_price) * 0.1).toFixed(2);
+    // Calculate guide fee
+    const guide_fee = total_price; // Assuming the guide fee is the total price
 
     const sql = `
-        INSERT INTO bookings (user_id, guide_id, hotel_id, room_id, total_price, commission, status, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, 'Confirmed', NOW())
+        INSERT INTO bookings (user_id, guide_id, hotel_id, room_id, total_price, commission, guide_fee, status, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, 'Confirmed', NOW())
     `;
 
-    db.query(sql, [user_id, guide_id, hotel_id, room_id, total_price, commission], (err, result) => {
+    db.query(sql, [user_id, guide_id, hotel_id, room_id, total_price, commission, guide_fee], (err, result) => {
         if (err) {
             console.error("Database error:", err);
             return res.status(500).json({ error: "Failed to create booking." });
@@ -1143,6 +1202,7 @@ app.post("/api/bookings", (req, res) => {
         res.status(201).json({ message: "Booking created successfully!", bookingId: result.insertId });
     });
 });
+
 
 
 

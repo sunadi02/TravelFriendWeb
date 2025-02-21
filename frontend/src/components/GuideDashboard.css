@@ -4,12 +4,12 @@
     flex-direction: column;
     min-height: 100vh;
     width: 1550px;
-    background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.5)), 
-    url('../images/mount3.jpg');
+    /* background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.5)), 
+    url('../images/mount3.jpg'); */
     background-size: cover; /* Makes the image cover the entire element */
     background-position: center; /* Centers the image */
     background-repeat: no-repeat; /* Prevents repeating */
-    background-color: #f4f4f4;
+    background-color: #dcdcdc;
 }
 
 /* Navbar */
@@ -119,7 +119,7 @@
 }
 
 .guide-dashboard .overview h2 {
-    color: #ffffff;
+    color: #3d3d3d;
     margin-bottom: 20px;
 }
 

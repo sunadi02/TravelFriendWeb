@@ -5,11 +5,12 @@
     min-height: 100vh;
     width: 1550px;
     /* background-color: #f4f4f4; */
-    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
-                url('../images/mount1.jpg');
+    /* background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                url('../images/mount1.jpg'); */
     background-size: cover; /* Makes the image cover the entire element */
     background-position: center; /* Centers the image */
     background-repeat: no-repeat; /* Prevents repeating */
+    background-color: #dedede;
 }
 
 /* Navbar */
@@ -128,7 +129,7 @@
 .overview h2{
     padding: 30px;
     margin-bottom: px;
-    color: #ffffff;
+    color: #3a3a3a;
 }
 
 .stats {

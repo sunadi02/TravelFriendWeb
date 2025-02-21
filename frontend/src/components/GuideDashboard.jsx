@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./GuideDashboard.css";
-import guideAvatar from "../images/pp.png"; // Guide profile pic
+import pp from "../images/pp.png";
 
 const GuideDashboard = () => {
     const navigate = useNavigate();
@@ -11,7 +11,7 @@ const GuideDashboard = () => {
     const [totalEarnings, setTotalEarnings] = useState(0);
     const [completedTours, setCompletedTours] = useState(0);
     const [cancelledTours, setCancelledTours] = useState(0);
-
+    const [profilePic, setProfilePic] = useState(pp); // Default profile picture
     const [showProfilePopup, setShowProfilePopup] = useState(false);
 
     useEffect(() => {
@@ -19,26 +19,79 @@ const GuideDashboard = () => {
             navigate("/login"); // Redirect if not guide
         }
 
-        // Fetch guide statistics
-        axios.get("http://localhost:5000/api/guides/stats", {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`
+        // Fetch guide details including profile picture
+        const fetchGuideDetails = async () => {
+            try {
+                const guideId = localStorage.getItem("guide_id");
+                const token = localStorage.getItem("token");
+
+                if (!guideId || !token) {
+                    console.error("Guide ID or token not found in localStorage.");
+                    return;
+                }
+
+                const response = await axios.get(`http://localhost:5000/api/guides/${guideId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                if (response.data.profile_pic) {
+                    setProfilePic(`http://localhost:5000/uploads/${response.data.profile_pic}`);
+                }
+            } catch (error) {
+                console.error("Error fetching guide details:", error);
             }
-        }
-        )
-        .then(response => {
-            setUpcomingHires(response.data.upcomingHires);
-            setAverageRating(response.data.averageRating);
-            setTotalEarnings(response.data.totalEarnings);
-            setCompletedTours(response.data.completedTours);
-            setCancelledTours(response.data.cancelledTours);
-        })
-        .catch(error => console.error("Error fetching guide stats:", error));
+        };
+
+        // Fetch guide statistics
+        const fetchGuideStats = async () => {
+            try {
+                const guideId = localStorage.getItem("guide_id");
+                const token = localStorage.getItem("token");
+        
+                if (!guideId || !token) {
+                    console.error("Guide ID or token not found in localStorage.");
+                    return;
+                }
+        
+                // Fetch total earnings (guide fees)
+                const earningsResponse = await axios.get(
+                    `http://localhost:5000/api/guides/total-earnings/${guideId}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+                const totalEarnings = earningsResponse.data.totalEarnings;
+        
+                // Fetch other stats (upcoming hires, average rating, etc.)
+                const statsResponse = await axios.get("http://localhost:5000/api/guides/stats", {
+                    params: { guide_id: guideId },
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+        
+                setUpcomingHires(statsResponse.data.upcomingHires);
+                setAverageRating(statsResponse.data.averageRating);
+                setTotalEarnings(totalEarnings); // Set total earnings from guide fees
+                setCompletedTours(statsResponse.data.completedTours);
+                setCancelledTours(statsResponse.data.cancelledTours);
+            } catch (error) {
+                console.error("Error fetching guide stats:", error);
+            }
+        };
+
+        fetchGuideDetails();
+        fetchGuideStats();
     }, [navigate]);
 
     const handleLogout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("role");
+        localStorage.removeItem("guide_id"); // Clear guide_id on logout
         navigate("/login");
     };
 
@@ -52,14 +105,14 @@ const GuideDashboard = () => {
                     </a>
                 </h1>
                 <nav className="header-nav">
-                    <a href="/guide-bookings">Bookings</a>
+                    <Link to="/guide-bookings">Bookings</Link>
                     <a href="/guide-revenue">Revenue</a>
                     <a href="/guide-settings">Settings</a>
                 </nav>
                 <div className="header-right">
                     <button className="notification-bell">🔔</button>
                     <div className="user-info" onClick={() => setShowProfilePopup(!showProfilePopup)}>
-                        <img src={guideAvatar} alt="Guide" className="profile-pic" />
+                        <img src={profilePic} alt="Guide" className="profile-pic" />
                         <span>Guide</span>
                     </div>
 

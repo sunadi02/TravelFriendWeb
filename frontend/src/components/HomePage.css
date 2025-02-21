@@ -179,9 +179,8 @@ html, body {
   z-index: 1;
   margin-top: 500px;
   text-align: left;
+  justify-content: left;
   margin-left: 200px;
-  
-  
 }
 
 .hero-content h2 {

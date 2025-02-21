@@ -10,6 +10,16 @@ const SearchGuides = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [guides, setGuides] = useState([]); // Guides from DB
+  const [showProfilePopup, setShowProfilePopup] = useState(false);
+
+  const handleProfileClick = () => {
+    setShowProfilePopup(!showProfilePopup);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/login";
+  };
 
   // Fetch guides from backend API
   useEffect(() => {
@@ -46,10 +56,23 @@ const SearchGuides = () => {
         </nav>
         <div className="header-right">
           <button className="notification-bell">🔔</button>
-          <div className="user-info">
+          <div className="user-info" onClick={handleProfileClick}>
             <img src={pp} alt="Profile" className="profile-pic" />
             <span></span>
           </div>
+
+          {showProfilePopup && (
+            <div className="profile-popup">
+              <ul>
+                <li><a href="/my-profile/:user_id">My Profile</a></li>
+                <li><a href="/booking-history">Booking History</a></li>
+                <li><a href="/settings">Settings</a></li>
+                <li><a href="/support-feedback">Support & Feedback</a></li>
+                <li><button onClick={handleLogout}>Logout</button></li>
+              </ul>
+            </div>
+      )}
+
         </div>
       </header>
 

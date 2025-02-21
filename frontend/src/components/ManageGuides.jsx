@@ -10,6 +10,7 @@ const ManageGuides = () => {
     const [selectedGuide, setSelectedGuide] = useState(null);
     const [editingGuide, setEditingGuide] = useState(null);
     const [showEditPopup, setShowEditPopup] = useState(false);
+    const [profilePic, setProfilePic] = useState(null); // State for profile picture file
 
     useEffect(() => {
         if (localStorage.getItem("isAdmin") !== "true") {
@@ -30,6 +31,7 @@ const ManageGuides = () => {
         setEditingGuide(guide);
         setShowEditPopup(true);
         setSelectedGuide(null);
+        setProfilePic(null); // Reset profile picture state when opening the edit popup
     };
 
     const handleDelete = async (guideId, e) => {
@@ -47,19 +49,44 @@ const ManageGuides = () => {
     };
 
     const handleSaveChanges = async () => {
-        try {
-            await axios.put(`http://localhost:5000/api/guide/${editingGuide.guide_id}`, {
-                username: editingGuide.username,
-                email: editingGuide.email,
-                phone_number: editingGuide.phone_number
-            });
+        const formData = new FormData();
+        formData.append("username", editingGuide.username);
+        formData.append("email", editingGuide.email);
+        formData.append("phone_number", editingGuide.phone_number);
 
-            setGuides(guides.map(guide => guide.guide_id === editingGuide.guide_id ? editingGuide : guide));
+        // Append the profile picture file if it exists
+        if (profilePic) {
+            formData.append("profile_pic", profilePic);
+        }
+
+        try {
+            const response = await axios.put(
+                `http://localhost:5000/api/guides/${editingGuide.guide_id}`,
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
+            );
+
+            // Update the guides list with the updated guide data
+            setGuides(guides.map(guide => 
+                guide.guide_id === editingGuide.guide_id ? response.data.guide : guide
+            ));
+
             setShowEditPopup(false);
             alert("Guide updated successfully!");
         } catch (error) {
             console.error("Error updating guide:", error);
             alert("Failed to update guide.");
+        }
+    };
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setProfilePic(file);
         }
     };
 
@@ -87,7 +114,7 @@ const ManageGuides = () => {
                     {guides.map((guide) => (
                         <tr key={guide.guide_id}>
                             <td>
-                                <img src={guide.profile_pic || pp} alt="Guide" className="profile-pic" />
+                                <img src={guide.profile_pic || pp }alt="Guide" className="profile-pic" />
                             </td>
                             <td>{guide.username}</td>
                             <td>{guide.email}</td>
@@ -132,6 +159,13 @@ const ManageGuides = () => {
                             type="text"
                             value={editingGuide.phone_number}
                             onChange={(e) => setEditingGuide({ ...editingGuide, phone_number: e.target.value })}
+                        />
+
+                        <label>Profile Picture:</label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
                         />
 
                         <div className="popup-buttons">

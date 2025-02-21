@@ -4,8 +4,12 @@
     flex-direction: column;
     min-height: 100vh;
     width: 1550px;
-
-    background-color: #f4f4f4;
+    /* background-color: #f4f4f4; */
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                url('../images/mount1.jpg');
+    background-size: cover; /* Makes the image cover the entire element */
+    background-position: center; /* Centers the image */
+    background-repeat: no-repeat; /* Prevents repeating */
 }
 
 /* Navbar */
@@ -124,6 +128,7 @@
 .overview h2{
     padding: 30px;
     margin-bottom: px;
+    color: #ffffff;
 }
 
 .stats {
@@ -132,13 +137,15 @@
     gap: 20px;
     width: 1400px;
     margin-bottom: 20px;
+    margin-left: 35px;
 }
 
 .stats1 {
     display: flex;
     justify-content: space-around;
-    gap: 20px;
+    gap: 10px;
     width: 1400px;
+    
 }
 
 .card {

@@ -893,8 +893,8 @@ app.post("/api/guides", upload.single("profile_pic"), async (req, res) => {
 
 app.put("/api/guides/:id", upload.single("profile_pic"), (req, res) => {
     const guideId = req.params.id;
-    const { username, email, password, guide_name, phone_number, languages,location, hourly_rate, rating, description } = req.body;
-    
+    const { username, email, password, guide_name, phone_number, languages, location, hourly_rate, rating, description } = req.body;
+
     // Check if a new image is uploaded
     let profilePicPath = req.file ? req.file.filename : null;
 
@@ -930,7 +930,7 @@ app.put("/api/guides/:id", upload.single("profile_pic"), (req, res) => {
         updateFields.push("languages = ?");
         values.push(languages);
     }
-    if(location){
+    if (location) {
         updateFields.push("location = ?");
         values.push(location);
     }
@@ -966,7 +966,21 @@ app.put("/api/guides/:id", upload.single("profile_pic"), (req, res) => {
             return res.status(500).json({ error: "Failed to update guide." });
         }
 
-        res.status(200).json({ message: "Guide updated successfully!" });
+        // Fetch the updated guide from the database
+        const fetchUpdatedGuideSql = "SELECT * FROM guides WHERE guide_id = ?";
+        db.query(fetchUpdatedGuideSql, [guideId], (err, results) => {
+            if (err) {
+                console.error("Database error:", err);
+                return res.status(500).json({ error: "Failed to fetch updated guide." });
+            }
+
+            if (results.length === 0) {
+                return res.status(404).json({ error: "Guide not found." });
+            }
+
+            const updatedGuide = results[0];
+            res.status(200).json({ guide: updatedGuide }); // Return the updated guide
+        });
     });
 });
 

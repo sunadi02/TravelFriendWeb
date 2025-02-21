@@ -1,10 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./ViewGuide.css";
 import pp from '../images/pp.png';
-  
 
 const ViewGuide = () => {
   const { guideId } = useParams();
@@ -12,24 +10,38 @@ const ViewGuide = () => {
   const [selectedDate, setSelectedDate] = useState("");
   const [duration, setDuration] = useState(1); // Default is 1 day
   const [loading, setLoading] = useState(true); // Show loading state
+  const [error, setError] = useState(""); // Store error message
 
   useEffect(() => {
     axios.get(`http://localhost:5000/api/guides/${guideId}`)
-        .then(response => {
-            setGuide(response.data); // Use response.data directly
-            setLoading(false);
-        })
-        .catch(error => {
-            console.error("Error fetching guide:", error);
-            setLoading(false);
-        });
-}, [guideId]);
+      .then(response => {
+        setGuide(response.data); // Use response.data directly
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error("Error fetching guide:", error);
+        setLoading(false);
+      });
+  }, [guideId]);
 
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
-if (loading) return <h2>Loading...</h2>;
+  const handleHireClick = () => {
+    if (!selectedDate) {
+      setError("Please select a date to proceed."); // Set error message
+      return; // Stop further execution
+    }
 
-if (!guide) return <h2>Guide not found!</h2>;
+    // Clear any previous error
+    setError("");
+
+    // Navigate to the payment page
+    navigate(`/select-payment/${guide.guide_id}/${guide.hourly_rate * duration}/${selectedDate}/${duration}`);
+  };
+
+  if (loading) return <h2>Loading...</h2>;
+
+  if (!guide) return <h2>Guide not found!</h2>;
 
   return (
     <div className="view-guide">
@@ -51,7 +63,7 @@ if (!guide) return <h2>Guide not found!</h2>;
         <div className="header-right">
           <button className="notification-bell">🔔</button>
           <div className="user-info">
-            <img src={guide.profile_pic ||pp} alt="Profile" className="profile-pic" />
+            <img src={guide.profile_pic || pp} alt="Profile" className="profile-pic" />
             <span>John Doe</span> {/* Replace with dynamic user name if available */}
           </div>
         </div>
@@ -59,46 +71,42 @@ if (!guide) return <h2>Guide not found!</h2>;
 
       {/* Guide Profile Section */}
       <div className="guide-profile">
-        
         <img src={guide.profile_pic || pp} alt={guide.guide_name} className="profile-pic" />
-
         <h2>{guide.guide_name}</h2>
         <p><strong>Username:</strong> {guide.username}</p>
         <p><strong>Email:</strong> {guide.email}</p>
         <p><strong>Location:</strong> {guide.location}</p>
-        {/* <p><strong>Specialization:</strong> {guide.specialization}</p> */}
         <p><strong>Languages Spoken:</strong> {guide.languages}</p>
         <p><strong>Price per day:</strong> LKR {guide.hourly_rate}</p>
         <p><strong>Ratings:</strong> ⭐{guide.rating}</p>
-        {/* <p><strong>Total Bookings:</strong> {guide.bookings}</p>
-        <p><strong>Availability:</strong> {guide.availability}</p> */}
       </div>
 
       {/* Tour Booking Section */}
       <div className="tour-booking">
         <h3>Select Tour Date</h3>
         <input
-                    type="date"
-                    min={new Date().toISOString().split("T")[0]} // Restrict past dates
-                    value={selectedDate}
-                    onChange={(e) => setSelectedDate(e.target.value)}
-                />
+          type="date"
+          min={new Date().toISOString().split("T")[0]} // Restrict past dates
+          value={selectedDate}
+          onChange={(e) => setSelectedDate(e.target.value)}
+        />
+        {error && <p className="error-message">{error}</p>} {/* Display error message */}
         <h3>Duration</h3>
         <select value={duration} onChange={(e) => setDuration(e.target.value)}>
-                    {[...Array(7)].map((_, i) => (
-                        <option key={i + 1} value={i + 1}>
-                            {i + 1} {i + 1 === 1 ? "day" : "days"}
-                        </option>
-                    ))}
-                </select>
+          {[...Array(7)].map((_, i) => (
+            <option key={i + 1} value={i + 1}>
+              {i + 1} {i + 1 === 1 ? "day" : "days"}
+            </option>
+          ))}
+        </select>
         <h3>Estimated Price</h3>
         <p>LKR {guide.hourly_rate * duration}</p>
-        <button 
-    className="hire-btn"
-    onClick={() => navigate(`/select-payment/${guide.guide_id}/${guide.hourly_rate * duration}/${selectedDate}/${duration}`)}
->
-    Hire
-</button>
+        <button
+          className="hire-btn"
+          onClick={handleHireClick} // Use the new handler
+        >
+          Hire
+        </button>
         <button className="message-btn">Message</button>
       </div>
 

@@ -11,7 +11,16 @@ const ManageRooms = () => {
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [editingRoom, setEditingRoom] = useState(null);
     const [showEditPopup, setShowEditPopup] = useState(false);
+    const [showAddRoomPopup, setShowAddRoomPopup] = useState(false); // State for Add Room popup
     const [hotel, setHotel] = useState(null);
+
+    // State for new room form
+    const [newRoom, setNewRoom] = useState({
+        room_type: "",
+        price_per_night: "",
+        availability: "1", // Default to "Not Available"
+        image: null, // For file upload
+    });
 
     useEffect(() => {
         if (localStorage.getItem("isAdmin") !== "true") {
@@ -69,11 +78,52 @@ const ManageRooms = () => {
         }
     };
 
+    // Handle input changes for the new room form
+    const handleNewRoomChange = (e) => {
+        const { name, value } = e.target;
+        setNewRoom({ ...newRoom, [name]: value });
+    };
+
+    // Handle image file upload
+    const handleImageUpload = (e) => {
+        setNewRoom({ ...newRoom, image: e.target.files[0] });
+    };
+
+    // Handle form submission for adding a new room
+    const handleAddRoom = async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData();
+        formData.append("hotel_id", hotelId);
+        formData.append("room_type", newRoom.room_type);
+        formData.append("price_per_night", newRoom.price_per_night);
+        formData.append("availability", newRoom.availability);
+        if (newRoom.image) {
+            formData.append("image", newRoom.image);
+        }
+
+        try {
+            const response = await axios.post("http://localhost:5000/api/rooms", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
+            // Add the new room to the rooms list
+            setRooms([...rooms, response.data]);
+            setShowAddRoomPopup(false); // Close the popup
+            alert("Room added successfully!");
+        } catch (error) {
+            console.error("Error adding room:", error);
+            alert("Failed to add room.");
+        }
+    };
+
     return (
         <div className="manage-rooms">
             <div className="header-section">
                 <h1>Manage Rooms - {hotel?.hotel_name}</h1>
-                <button className="add-room-btn" onClick={() => navigate(`/add-room/${hotelId}`)}>
+                <button className="add-room-btn" onClick={() => setShowAddRoomPopup(true)}>
                     + Add New Room
                 </button>
             </div>
@@ -113,6 +163,7 @@ const ManageRooms = () => {
                 </tbody>
             </table>
 
+            {/* Edit Room Popup */}
             {showEditPopup && editingRoom && (
                 <div className="popup-overlay">
                     <div className="popup">
@@ -144,6 +195,57 @@ const ManageRooms = () => {
                             <button onClick={handleSaveChanges} className="save-btn">Save Changes</button>
                             <button onClick={() => setShowEditPopup(false)} className="cancel-btn">Cancel</button>
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Add Room Popup */}
+            {showAddRoomPopup && (
+                <div className="popup-overlay">
+                    <div className="popup">
+                        <h2>Add New Room</h2>
+                        <form onSubmit={handleAddRoom}>
+                            <label>Room Type:</label>
+                            <input
+                                type="text"
+                                name="room_type"
+                                value={newRoom.room_type}
+                                onChange={handleNewRoomChange}
+                                required
+                            />
+
+                            <label>Price Per Night:</label>
+                            <input
+                                type="number"
+                                name="price_per_night"
+                                value={newRoom.price_per_night}
+                                onChange={handleNewRoomChange}
+                                required
+                            />
+
+                            <label>Availability:</label>
+                            <select
+                                name="availability"
+                                value={newRoom.availability}
+                                onChange={handleNewRoomChange}
+                            >
+                                <option value="1">Not Available</option>
+                                <option value="0">Available</option>
+                            </select>
+
+                            <label>Room Image:</label>
+                            <input
+                                type="file"
+                                name="image"
+                                onChange={handleImageUpload}
+                                accept="image/*"
+                            />
+
+                            <div className="popup-buttons">
+                                <button type="submit" className="save-btn">Add Room</button>
+                                <button type="button" onClick={() => setShowAddRoomPopup(false)} className="cancel-btn">Cancel</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             )}

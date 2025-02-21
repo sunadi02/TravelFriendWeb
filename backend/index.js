@@ -265,51 +265,51 @@ app.get("/api/admins/stats", (req, res) => {
     });
 });
 
-// Guide Statistics Route
-app.get("/api/guides/stats", (req, res) => {
-    const guideId = req.user.guide_id; // Assuming you're using JWT middleware to extract guide ID
+// // Guide Statistics Route
+// app.get("/api/guides/stats", (req, res) => {
+//     const guideId = req.user.guide_id;
 
-    const sql = `
-        SELECT 
-            (SELECT COUNT(*) FROM bookings WHERE guide_id = ? AND status = 'upcoming') AS upcomingHires,
-            (SELECT AVG(rating) FROM reviews WHERE guide_id = ?) AS averageRating,
-            (SELECT SUM(earnings) FROM bookings WHERE guide_id = ?) AS totalEarnings,
-            (SELECT COUNT(*) FROM bookings WHERE guide_id = ? AND status = 'completed') AS completedTours,
-            (SELECT COUNT(*) FROM bookings WHERE guide_id = ? AND status = 'cancelled') AS cancelledTours
-    `;
+//     const sql = `
+//         SELECT 
+//             (SELECT COUNT(*) FROM bookings WHERE guide_id = ? AND status = 'upcoming') AS upcomingHires,
+//             (SELECT AVG(rating) FROM reviews WHERE guide_id = ?) AS averageRating,
+//             (SELECT SUM(earnings) FROM bookings WHERE guide_id = ?) AS totalEarnings,
+//             (SELECT COUNT(*) FROM bookings WHERE guide_id = ? AND status = 'completed') AS completedTours,
+//             (SELECT COUNT(*) FROM bookings WHERE guide_id = ? AND status = 'cancelled') AS cancelledTours
+//     `;
 
-    db.query(sql, [guideId, guideId, guideId, guideId, guideId], (err, results) => {
-        if (err) {
-            console.error("Database error:", err);
-            return res.status(500).json({ error: "Failed to fetch guide stats." });
-        }
+//     db.query(sql, [guideId, guideId, guideId, guideId, guideId], (err, results) => {
+//         if (err) {
+//             console.error("Database error:", err);
+//             return res.status(500).json({ error: "Failed to fetch guide stats." });
+//         }
 
-        res.status(200).json(results[0]);
-    });
-});
+//         res.status(200).json(results[0]);
+//     });
+// });
 
 // Hotel Statistics Route
-app.get("/api/hotels/stats", (req, res) => {
-    const hotelId = req.user.hotel_id; // Assuming you're using JWT middleware to extract hotel ID
+// app.get("/api/hotels/stats", (req, res) => {
+//     const hotelId = req.user.hotel_id; // Assuming you're using JWT middleware to extract hotel ID
 
-    const sql = `
-        SELECT 
-            (SELECT COUNT(*) FROM bookings WHERE hotel_id = ? AND status = 'upcoming') AS upcomingBookings,
-            (SELECT AVG(rating) FROM reviews WHERE hotel_id = ?) AS averageRating,
-            (SELECT SUM(price) FROM bookings WHERE hotel_id = ?) AS totalRevenue,
-            (SELECT COUNT(*) FROM bookings WHERE hotel_id = ? AND status = 'completed') AS completedBookings,
-            (SELECT COUNT(*) FROM bookings WHERE hotel_id = ? AND status = 'cancelled') AS cancelledBookings
-    `;
+//     const sql = `
+//         SELECT 
+//             (SELECT COUNT(*) FROM bookings WHERE hotel_id = ? AND status = 'upcoming') AS upcomingBookings,
+//             (SELECT AVG(rating) FROM reviews WHERE hotel_id = ?) AS averageRating,
+//             (SELECT SUM(price) FROM bookings WHERE hotel_id = ?) AS totalRevenue,
+//             (SELECT COUNT(*) FROM bookings WHERE hotel_id = ? AND status = 'completed') AS completedBookings,
+//             (SELECT COUNT(*) FROM bookings WHERE hotel_id = ? AND status = 'cancelled') AS cancelledBookings
+//     `;
 
-    db.query(sql, [hotelId, hotelId, hotelId, hotelId, hotelId], (err, results) => {
-        if (err) {
-            console.error("Database error:", err);
-            return res.status(500).json({ error: "Failed to fetch hotel stats." });
-        }
+//     db.query(sql, [hotelId, hotelId, hotelId, hotelId, hotelId], (err, results) => {
+//         if (err) {
+//             console.error("Database error:", err);
+//             return res.status(500).json({ error: "Failed to fetch hotel stats." });
+//         }
 
-        res.status(200).json(results[0]);
-    });
-});
+//         res.status(200).json(results[0]);
+//     });
+// });
 
 
 // Set up nodemailer transporter

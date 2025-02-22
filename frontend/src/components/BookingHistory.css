@@ -7,6 +7,7 @@
 .booking-history h2{
     font-weight: bold;
     font-size: 25px;
+    margin-top: 200px;
 }
 
 .booking-table {
@@ -14,7 +15,7 @@
     height: 300px;
     margin-right: 250px;
     border-collapse: collapse;
-    margin-top: 20px;
+    
 }
 
 .booking-table th, .booking-table td {

@@ -11,7 +11,7 @@ const ManageRooms = () => {
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [editingRoom, setEditingRoom] = useState(null);
     const [showEditPopup, setShowEditPopup] = useState(false);
-    const [showAddRoomPopup, setShowAddRoomPopup] = useState(false); // State for Add Room popup
+    const [showAddRoomPopup, setShowAddRoomPopup] = useState(false);
     const [hotel, setHotel] = useState(null);
 
     // State for new room form
@@ -19,7 +19,7 @@ const ManageRooms = () => {
         room_type: "",
         price_per_night: "",
         availability: "1", // Default to "Not Available"
-        image: null, // For file upload
+        image: null,
     });
 
     useEffect(() => {
@@ -42,7 +42,7 @@ const ManageRooms = () => {
 
     const handleEdit = (room, e) => {
         e.stopPropagation();
-        setEditingRoom(room);
+        setEditingRoom({ ...room }); // Initialize with existing room data, including the image
         setShowEditPopup(true);
         setSelectedRoom(null);
     };
@@ -62,14 +62,27 @@ const ManageRooms = () => {
     };
 
     const handleSaveChanges = async () => {
+        const formData = new FormData();
+        formData.append("room_type", editingRoom.room_type);
+        formData.append("price_per_night", editingRoom.price_per_night);
+        formData.append("availability", editingRoom.availability);
+
+        // Only append the image if a new one is uploaded
+        if (editingRoom.image instanceof File) {
+            formData.append("image", editingRoom.image);
+        } else {
+            // Retain the existing image if no new image is uploaded
+            formData.append("image", editingRoom.image || ""); // Ensure image is not null
+        }
+
         try {
-            await axios.put(`http://localhost:5000/api/rooms/${editingRoom.room_id}`, {
-                room_type: editingRoom.room_type,
-                price_per_night: editingRoom.price_per_night,
-                availability: editingRoom.availability
+            const response = await axios.put(`http://localhost:5000/api/rooms/${editingRoom.room_id}`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
             });
 
-            setRooms(rooms.map(room => room.room_id === editingRoom.room_id ? editingRoom : room));
+            setRooms(rooms.map(room => room.room_id === editingRoom.room_id ? response.data : room));
             setShowEditPopup(false);
             alert("Room updated successfully!");
         } catch (error) {
@@ -78,18 +91,15 @@ const ManageRooms = () => {
         }
     };
 
-    // Handle input changes for the new room form
     const handleNewRoomChange = (e) => {
         const { name, value } = e.target;
         setNewRoom({ ...newRoom, [name]: value });
     };
 
-    // Handle image file upload
     const handleImageUpload = (e) => {
         setNewRoom({ ...newRoom, image: e.target.files[0] });
     };
 
-    // Handle form submission for adding a new room
     const handleAddRoom = async (e) => {
         e.preventDefault();
 
@@ -109,9 +119,8 @@ const ManageRooms = () => {
                 },
             });
 
-            // Add the new room to the rooms list
             setRooms([...rooms, response.data]);
-            setShowAddRoomPopup(false); // Close the popup
+            setShowAddRoomPopup(false);
             alert("Room added successfully!");
         } catch (error) {
             console.error("Error adding room:", error);
@@ -146,7 +155,7 @@ const ManageRooms = () => {
                             </td>
                             <td>{room.room_type}</td>
                             <td>{room.price_per_night}</td>
-                            <td>{room.availability ? "Not Available" : "Available"}</td>
+                            <td>{room.availability ? "Available" : "Not Available"}</td>
                             <td>
                                 <div className="action-menu">
                                     <button onClick={() => toggleDropdown(room.room_id)}>⋮</button>
@@ -187,9 +196,16 @@ const ManageRooms = () => {
                             value={editingRoom.availability}
                             onChange={(e) => setEditingRoom({ ...editingRoom, availability: e.target.value })}
                         >
-                            <option value="1">Not Available</option>
-                            <option value="0">Available</option>
+                            <option value="1">Available</option>
+                            <option value="0">Not Available</option>
                         </select>
+
+                        <label>Room Image:</label>
+                        <input
+                            type="file"
+                            onChange={(e) => setEditingRoom({ ...editingRoom, image: e.target.files[0] })}
+                            accept="image/*"
+                        />
 
                         <div className="popup-buttons">
                             <button onClick={handleSaveChanges} className="save-btn">Save Changes</button>
@@ -229,8 +245,8 @@ const ManageRooms = () => {
                                 value={newRoom.availability}
                                 onChange={handleNewRoomChange}
                             >
-                                <option value="1">Not Available</option>
-                                <option value="0">Available</option>
+                                <option value="1">Available</option>
+                                <option value="0">Not Available</option>
                             </select>
 
                             <label>Room Image:</label>

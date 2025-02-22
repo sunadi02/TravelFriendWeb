@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./GuideDashboard.css";
 import pp from "../images/pp.png";
+import chart1 from "../images/guidechart1.png";
+import chart2 from "../images/guidechart2.png";
 
 const GuideDashboard = () => {
     const navigate = useNavigate();
@@ -160,11 +162,11 @@ const GuideDashboard = () => {
             <div className="charts">
                 <div className="chart">
                     <h4>Number of Guide Hiring per Day</h4>
-                    <img src="/guide-hiring-chart.png" alt="Guide Hiring Chart" />
+                    <img src={chart1} alt="Guide Hiring Chart" />
                 </div>
                 <div className="chart">
                     <h4>Number of Hotel Bookings per Day</h4>
-                    <img src="/hotel-bookings-chart.png" alt="Hotel Bookings Chart" />
+                    <img src={chart2} alt="Hotel Bookings Chart" />
                 </div>
             </div>
 

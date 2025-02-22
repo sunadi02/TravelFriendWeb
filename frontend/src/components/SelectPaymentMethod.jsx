@@ -51,57 +51,43 @@ const SelectPaymentMethod = () => {
 
   const handlePayClick = async () => {
     if (!selectedMethod) {
-      alert("Please select a payment method.");
-      return;
+        alert("Please select a payment method.");
+        return;
     }
 
     try {
-      // Save booking to the database
-      await axios.post("http://localhost:5000/api/bookings", {
-        user_id: user.user_id,
-        guide_id: isGuideBooking ? guideId : null,
-        hotel_id: isHotelBooking ? hotelId : null,
-        room_id: isHotelBooking ? roomId : null,
-        total_price: totalPrice,
-        commission: commission,
-        guide_fee: guideFee,
-        status: "Confirmed",
-      });
+        let paymentDetails = {
+            payment_method: selectedMethod === "cash" ? "cash" : "card",
+            card_number: selectedMethod === "cash" ? null : selectedMethod,
+        };
 
-      if (selectedMethod === "cash") {
-        alert(`Booking confirmed!\nDate: ${selectedDate}\nDuration: ${duration} days\nTotal: LKR ${totalPrice}`);
-        navigate("/my-profile");
-      } else if (selectedMethod === "card") {
-        // Redirect to add new card page
-        navigate(`/add-card/${guideId || hotelId}/${totalPrice}/${selectedDate}/${duration}`);
-      } else {
-        // Handle saved card payment
-        const selectedCard = savedCards.find(card => card.card_number === selectedMethod);
-        if (selectedCard) {
-          // Process payment using saved card
-          await axios.post("http://localhost:5000/api/paymentinfo/pay", {
+        // Save booking to the database
+        await axios.post("http://localhost:5000/api/bookings", {
             user_id: user.user_id,
-            card_id: selectedCard.card_id,
-            amount: totalPrice,
-            booking_details: {
-              guide_id: isGuideBooking ? guideId : null,
-              hotel_id: isHotelBooking ? hotelId : null,
-              room_id: isHotelBooking ? roomId : null,
-              date: selectedDate,
-              duration: duration,
-            },
-          });
-          alert(`Payment successful!\nBooking confirmed.\nTotal: LKR ${totalPrice}`);
-          navigate("/my-profile");
+            guide_id: isGuideBooking ? guideId : null,
+            hotel_id: isHotelBooking ? hotelId : null,
+            room_id: isHotelBooking ? roomId : null,
+            total_price: totalPrice,
+            commission: commission,
+            guide_fee: guideFee,
+            status: "Confirmed",
+            payment_method: paymentDetails.payment_method,
+            card_number: paymentDetails.card_number,
+        });
+
+        if (selectedMethod === "cash") {
+            alert(`Booking confirmed!\nDate: ${selectedDate}\nDuration: ${duration} days\nTotal: LKR ${totalPrice}`);
         } else {
-          alert("Selected card not found.");
+            alert(`Payment successful!\nBooking confirmed.\nTotal: LKR ${totalPrice}`);
         }
-      }
+
+        // Redirect to the profile page after successful booking
+        navigate("/my-profile");
     } catch (error) {
-      console.error("Booking error:", error);
-      alert("Failed to process booking. Please try again.");
+        console.error("Booking error:", error);
+        alert("Failed to process booking. Please try again.");
     }
-  };
+};
 
   return (
     <div className="payment-container">

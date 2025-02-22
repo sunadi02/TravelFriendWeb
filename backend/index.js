@@ -851,9 +851,6 @@ app.get("/api/paymentinfo/:id", (req, res) => {
 });
 
 
-
-
-
 // POST API to add a new guide
 app.post("/api/guides", upload.single("profile_pic"), async (req, res) => {
     const {
@@ -1142,24 +1139,26 @@ app.get("/api/guides/total-earnings/:guide_id", (req, res) => {
     );
   });
   
-  // Update room details
-  app.put("/api/rooms/:room_id", upload.single("image"), (req, res) => {
+ // Update room details
+app.put("/api/rooms/:room_id", upload.single("image"), (req, res) => {
     const { room_id } = req.params;
     const { room_type, price_per_night, availability } = req.body;
-    const image = req.file ? req.file.filename : req.body.image; // Keep old image if not updated
-  
+
+    // If no new image is uploaded, retain the existing image
+    const image = req.file ? req.file.filename : req.body.image;
+
     db.query(
-      "UPDATE rooms SET room_type = ?, image = ?, price_per_night = ?, availability = ? WHERE room_id = ?",
-      [room_type, image, price_per_night, availability, room_id],
-      (err) => {
-        if (err) {
-          console.error("Error updating room:", err);
-          return res.status(500).json({ error: "Database error" });
+        "UPDATE rooms SET room_type = ?, image = ?, price_per_night = ?, availability = ? WHERE room_id = ?",
+        [room_type, image, price_per_night, availability, room_id],
+        (err) => {
+            if (err) {
+                console.error("Error updating room:", err);
+                return res.status(500).json({ error: "Database error" });
+            }
+            res.json({ message: "Room updated successfully" });
         }
-        res.json({ message: "Room updated successfully" });
-      }
     );
-  });
+});
   
   // Delete a room
   app.delete("/api/rooms/:room_id", (req, res) => {

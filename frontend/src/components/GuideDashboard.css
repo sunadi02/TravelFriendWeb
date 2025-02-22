@@ -4,8 +4,9 @@
     flex-direction: column;
     min-height: 100vh;
     width: 1550px;
-    /* background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.5)), 
-    url('../images/mount3.jpg'); */
+    
+    background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.5)), 
+    url('../images/mount3.jpg');
     background-size: cover; /* Makes the image cover the entire element */
     background-position: center; /* Centers the image */
     background-repeat: no-repeat; /* Prevents repeating */
@@ -116,10 +117,11 @@
 
 .guide-dashboard .overview {
     padding: 30px;
+    margin-top: 450px;
 }
 
 .guide-dashboard .overview h2 {
-    color: #3d3d3d;
+    color: #ffffff;
     margin-bottom: 20px;
 }
 
